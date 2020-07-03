@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30128.74
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPF Application", "WPF Application\WPF Application.csproj", "{11AD4FF7-F2D8-4C58-A07B-386B9A816D98}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MDM", "MDM\MDM.csproj", "{F48687E2-E968-4781-99FA-AECC91D39B6A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MDM Proxy", "MDM Proxy\MDM Proxy.csproj", "{D4B36332-D6B1-4D83-9F96-98D7A2A0B579}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{11AD4FF7-F2D8-4C58-A07B-386B9A816D98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11AD4FF7-F2D8-4C58-A07B-386B9A816D98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11AD4FF7-F2D8-4C58-A07B-386B9A816D98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11AD4FF7-F2D8-4C58-A07B-386B9A816D98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F48687E2-E968-4781-99FA-AECC91D39B6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F48687E2-E968-4781-99FA-AECC91D39B6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F48687E2-E968-4781-99FA-AECC91D39B6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F48687E2-E968-4781-99FA-AECC91D39B6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4B36332-D6B1-4D83-9F96-98D7A2A0B579}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4B36332-D6B1-4D83-9F96-98D7A2A0B579}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4B36332-D6B1-4D83-9F96-98D7A2A0B579}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4B36332-D6B1-4D83-9F96-98D7A2A0B579}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DE8E3293-8692-4164-9B46-1F18743A8CCD}
+	EndGlobalSection
+EndGlobal
