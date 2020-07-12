@@ -3,10 +3,69 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WPF_Application"
+        xmlns:local="clr-namespace:com.drewchaseproject.MDM.WPF" xmlns:svgc1="http://sharpvectors.codeplex.com/svgc/" xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Background="#140F40"
+        MinHeight="450" MinWidth="800"
+        WindowStartupLocation="CenterScreen"
+        Title="Magic Download Manager" Height="720" Width="1280"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        >
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="35" />
+    </WindowChrome.WindowChrome>
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50" />
+            <ColumnDefinition Width="200*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
         
+        <!-- Title Bar -->
+
+        <Grid Grid.Row="0" Grid.Column="2" Background="Transparent" >
+            <DockPanel HorizontalAlignment="Right" WindowChrome.IsHitTestVisibleInChrome="True" VerticalAlignment="Center">
+                <Button Name="MinimizeBtn" Width="35">
+                    <iconPacks:PackIconFontAwesome Kind="WindowMinimizeRegular" />
+                </Button>
+                <Button Name="MaximizeBtn" Width="35">
+                    <iconPacks:PackIconMaterial Kind="WindowMaximize" />
+                </Button>
+                <Button Name="CloseBtn" Width="35">
+                    <iconPacks:PackIconMaterial Kind="Close" />
+                </Button>
+            </DockPanel>
+        </Grid>
+        
+        <!-- Left Menu Bar -->
+        <Grid HorizontalAlignment="Left" Background="#281D7D" Grid.Column="0" Grid.ColumnSpan="1" Grid.RowSpan="2" >
+            <Viewbox VerticalAlignment="Top">
+                <StackPanel >
+                    <Button Name="MenuViewBtn" Width="33" Height="33" Margin="0 10">
+                        <iconPacks:PackIconMaterial Kind="Home" Width="28" Height="28"/>
+                    </Button>
+                    <Button Name="LogViewBtn" Width="33" Height="33" Margin="0 10">
+                        <iconPacks:PackIconMaterial Kind="Console" Width="28" Height="28" />
+                    </Button>
+                    <Button Name="DownloadViewBtn" Width="33" Height="33" Margin="0 10">
+                        <iconPacks:PackIconMaterial Kind="Download" Width="28" Height="28" />
+                    </Button>
+                </StackPanel>
+            </Viewbox>
+            <Viewbox VerticalAlignment="Bottom">
+                <Button Name="SettingsViewBtn" Width="33" Height="33" Margin="0 10">
+                    <iconPacks:PackIconFontAwesome Kind="CogSolid" Width="28" Height="28"/>
+                </Button>
+            </Viewbox>
+        </Grid>
+       
+        <Frame Name="Main" Grid.Column="1" Grid.ColumnSpan="1" Background="Transparent" BorderThickness="0" Margin="0" NavigationUIVisibility="Hidden" Grid.Row="2"/>
+
     </Grid>
+
 </Window>
+    

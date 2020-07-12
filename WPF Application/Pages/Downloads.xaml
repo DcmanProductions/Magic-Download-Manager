@@ -1,0 +1,31 @@
+﻿<Page x:Class="com.drewchaseproject.MDM.WPF.Pages.Downloads"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:com.drewchaseproject.MDM.WPF.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="Downloads">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100*" />
+            <RowDefinition Height="287*" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Grid.RowSpan="1">
+            <Viewbox>
+                <DockPanel>
+                    <Label Content="Downloads" HorizontalContentAlignment="Center" />
+                    <Button Name="AddDownloadBtn" Width="25" Background="Transparent" BorderThickness="0">
+                        <Image Source="..\Resources\Transparent\Plus.png" />
+                    </Button>
+                </DockPanel>
+            </Viewbox>
+        </Grid>
+        <ScrollViewer Grid.Row="1" Grid.RowSpan="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <StackPanel Name="DownloadViewer" Margin="50 0" />
+        </ScrollViewer>
+    </Grid>
+</Page>
