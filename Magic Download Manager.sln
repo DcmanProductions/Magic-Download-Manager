@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MDM", "MDM\MDM.csproj", "{F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MDM Proxy", "MDM Proxy\MDM Proxy.csproj", "{D4B36332-D6B1-4D83-9F96-98D7A2A0B579}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{A09AB0DD-A02D-4EFB-B262-CB68F9F06526}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,10 +27,6 @@ Global
 		{D4B36332-D6B1-4D83-9F96-98D7A2A0B579}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4B36332-D6B1-4D83-9F96-98D7A2A0B579}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D4B36332-D6B1-4D83-9F96-98D7A2A0B579}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A09AB0DD-A02D-4EFB-B262-CB68F9F06526}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A09AB0DD-A02D-4EFB-B262-CB68F9F06526}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A09AB0DD-A02D-4EFB-B262-CB68F9F06526}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A09AB0DD-A02D-4EFB-B262-CB68F9F06526}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
