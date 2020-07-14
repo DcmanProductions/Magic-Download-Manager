@@ -1,26 +1,13 @@
 ﻿using com.drewchaseproject.MDM.Library.Data;
-using com.drewchaseproject.MDM.Library.Objects;
 using com.drewchaseproject.MDM.Library.Utilities;
 using com.drewchaseproject.MDM.WPF.Pages;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace com.drewchaseproject.MDM.WPF
 {
@@ -29,6 +16,9 @@ namespace com.drewchaseproject.MDM.WPF
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly ChaseLabs.CLLogger.LogManger log = ChaseLabs.CLLogger.LogManger.Init().SetLogDirectory(Values.Singleton.LogFileLocation).EnableDefaultConsoleLogging().SetMinLogType(ChaseLabs.CLLogger.Lists.LogTypes.All);
+        private static MainWindow _singleton;
+        public static MainWindow Singleton => _singleton;
 
         private static IntPtr WindowProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
@@ -103,8 +93,8 @@ namespace com.drewchaseproject.MDM.WPF
             public int right;
             public int bottom;
             public static readonly RECT Empty = new RECT();
-            public int Width { get { return Math.Abs(right - left); } }
-            public int Height { get { return bottom - top; } }
+            public int Width => Math.Abs(right - left);
+            public int Height => bottom - top;
             public RECT(int left, int top, int right, int bottom)
             {
                 this.left = left;
@@ -119,7 +109,7 @@ namespace com.drewchaseproject.MDM.WPF
                 right = rcSrc.right;
                 bottom = rcSrc.bottom;
             }
-            public bool IsEmpty { get { return left >= right || top >= bottom; } }
+            public bool IsEmpty => left >= right || top >= bottom;
             public override string ToString()
             {
                 if (this == Empty) { return "RECT {Empty}"; }
@@ -130,7 +120,11 @@ namespace com.drewchaseproject.MDM.WPF
                 if (!( obj is Rect )) { return false; }
                 return ( this == (RECT) obj );
             }
-            public override int GetHashCode() => left.GetHashCode() + top.GetHashCode() + right.GetHashCode() + bottom.GetHashCode();
+            public override int GetHashCode()
+            {
+                return left.GetHashCode() + top.GetHashCode() + right.GetHashCode() + bottom.GetHashCode();
+            }
+
             public static bool operator ==(RECT rect1, RECT rect2) { return ( rect1.left == rect2.left && rect1.top == rect2.top && rect1.right == rect2.right && rect1.bottom == rect2.bottom ); }
             public static bool operator !=(RECT rect1, RECT rect2) { return !( rect1 == rect2 ); }
         }
@@ -144,6 +138,7 @@ namespace com.drewchaseproject.MDM.WPF
         public MainWindow()
         {
             InitializeComponent();
+            _singleton = this;
             Setup();
             RegisterEvents();
 
@@ -160,7 +155,14 @@ namespace com.drewchaseproject.MDM.WPF
 
         private void Setup()
         {
+            Values.Singleton.MainDispatcher = Application.Current.Dispatcher;
+            if (File.Exists(Values.Singleton.LogFileLocation))
+            {
+                File.Delete(Values.Singleton.LogFileLocation);
+            }
+
             ChangeView(PageType.Welcome);
+            _ = Configuration.Singleton;
         }
 
         private void RegisterEvents()
@@ -173,30 +175,43 @@ namespace com.drewchaseproject.MDM.WPF
 
             MouseDown += (s, e) =>
             {
-                if (WindowState == WindowState.Maximized) WindowState = WindowState.Normal;
-                DragMove();
+                if (e.LeftButton == MouseButtonState.Pressed && e.RightButton == MouseButtonState.Released)
+                {
+                    if (WindowState == WindowState.Maximized)
+                    {
+                        WindowState = WindowState.Normal;
+                    }
+
+                    DragMove();
+                }
             };
 
             MenuViewBtn.Click += ( (object sender, RoutedEventArgs e) => ChangeView(PageType.Welcome) );
             SettingsViewBtn.Click += ( (object sender, RoutedEventArgs e) => ChangeView(PageType.Settings) );
+            LogViewBtn.Click += ( (object sender, RoutedEventArgs e) => ChangeView(PageType.Console) );
             DownloadViewBtn.Click += ( (object sender, RoutedEventArgs e) => ChangeView(PageType.Downloads) );
 
             MinimizeBtn.Click += ( (s, e) => WindowState = WindowState.Minimized );
             MaximizeBtn.Click += ( (s, e) => WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized );
-            CloseBtn.Click += ( (s, e) => Close() );
+            CloseBtn.Click += ( (s, e) => PreClose() );
 
 
             AppDomain.CurrentDomain.ProcessExit += ( (object sender, EventArgs e) => OnExit() );
 
         }
 
-        void OnExit()
+        private void PreClose()
+        {
+            OnExit();
+            Close();
+        }
+
+        private void OnExit()
         {
             FastDownloadExecutableUtility.DestroyExecutable();
         }
 
-
-        void ChangeView(PageType page)
+        private void ChangeView(PageType page)
         {
             switch (page)
             {
@@ -204,10 +219,13 @@ namespace com.drewchaseproject.MDM.WPF
                     Main.Content = new Welcome();
                     break;
                 case PageType.Downloads:
-                    Main.Content = new Downloads();
+                    Main.Content = Downloads.Singleton;
                     break;
                 case PageType.Settings:
                     Main.Content = new Settings();
+                    break;
+                case PageType.Console:
+                    Main.Content = new Log();
                     break;
                 default:
                     ChangeView(PageType.Welcome);

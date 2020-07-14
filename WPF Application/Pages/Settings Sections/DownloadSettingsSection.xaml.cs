@@ -1,19 +1,6 @@
 ﻿using com.drewchaseproject.MDM.Library.Data;
 using com.drewchaseproject.MDM.Library.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace com.drewchaseproject.MDM.WPF.Pages.Settings_Sections
 {
@@ -29,7 +16,7 @@ namespace com.drewchaseproject.MDM.WPF.Pages.Settings_Sections
             RegisterEvents();
         }
 
-        void Setup()
+        private void Setup()
         {
             SplitTextBox.Text = Values.Singleton.FileSplitCount + "";
             ConnectionsTextBox.Text = Values.Singleton.ConnectionsPerProxy + "";
@@ -37,13 +24,12 @@ namespace com.drewchaseproject.MDM.WPF.Pages.Settings_Sections
             DownloadLocationTextBlock.Text = Values.Singleton.DownloadDirectory;
         }
 
-        void RegisterEvents()
+        private void RegisterEvents()
         {
             ConnectionsTextBox.TextChanged += (s, e) =>
              {
                  string text = ConnectionsTextBox.Text;
-                 int number = 0;
-                 if (int.TryParse(text, out number))
+                 if (int.TryParse(text, out int number))
                  {
                      Values.Singleton.ConnectionsPerProxy = number;
                  }
@@ -53,8 +39,7 @@ namespace com.drewchaseproject.MDM.WPF.Pages.Settings_Sections
             SplitTextBox.TextChanged += (s, e) =>
             {
                 string text = SplitTextBox.Text;
-                int number = 0;
-                if (int.TryParse(text, out number))
+                if (int.TryParse(text, out int number))
                 {
                     Values.Singleton.FileSplitCount = number;
                 }

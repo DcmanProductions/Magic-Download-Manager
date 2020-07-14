@@ -1,19 +1,11 @@
 ﻿using com.drewchaseproject.MDM.Library.Data;
 using com.drewchaseproject.MDM.Library.Objects;
+using com.drewchaseproject.MDM.Library.Utilities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace com.drewchaseproject.MDM.WPF.Pages
 {
@@ -22,64 +14,50 @@ namespace com.drewchaseproject.MDM.WPF.Pages
     /// </summary>
     public partial class Downloads : Page
     {
-        public Downloads()
+        private readonly ChaseLabs.CLLogger.LogManger log = ChaseLabs.CLLogger.LogManger.Init().SetLogDirectory(Values.Singleton.LogFileLocation).EnableDefaultConsoleLogging().SetMinLogType(ChaseLabs.CLLogger.Lists.LogTypes.All);
+        private static Downloads _singleton;
+        public static Downloads Singleton
+        {
+            get
+            {
+                if (_singleton == null)
+                {
+                    _singleton = new Downloads();
+                }
+
+                return _singleton;
+            }
+        }
+
+        private Downloads()
         {
             InitializeComponent();
+            RegisterEvents();
+            Values.Singleton.DownloadView = DownloadViewer;
+            UIUtility.GenerateDownloadUI(DownloadViewer);
         }
 
-        void RegisterEvents()
+        private void RegisterEvents()
         {
-            AddDownloadBtn.Click += ((object sender, RoutedEventArgs e) =>
+            AddDownloadBtn.Click += ( (object sender, RoutedEventArgs e) =>
             {
-                GenerateDownloadUI(new DownloadFile()
-                {
-                    URL = "https://mirrors.lug.mtu.edu/ubuntu-releases/20.04/ubuntu-20.04-desktop-amd64.iso",
-                    CurrentProgress = new Random().Next(0, 100)
-                });
-            });
-        }
-
-
-        void GenerateDownloadUI(params DownloadFile[] files)
-        {
-            if (files.Length > 0)
+                MainWindow.Singleton.Main.Content = new AddDownload();
+            } );
+            PlayDownloadBtn.Click += (s, e) =>
             {
-                Values.Singleton.DownloadQueue.AddRange(files);
-            }
-            foreach (var file in Values.Singleton.DownloadQueue)
-            {
-                var dock = new DockPanel()
+                if (Values.Singleton.DownloadQueue.Count > 0)
                 {
-                    HorizontalAlignment = HorizontalAlignment.Stretch
-                };
-                var stack = new StackPanel()
-                {
-                    HorizontalAlignment = HorizontalAlignment.Stretch
-                };
-                var title = new TextBlock()
-                {
-                    TextTrimming = TextTrimming.CharacterEllipsis,
-                    Text = file.FileName,
-                    FontSize = 24
-                };
-
-                var border = new Border()
-                {
-                    BorderThickness = new Thickness(10),
-                    BorderBrush = new SolidColorBrush(Color.FromRgb(12, 9, 38)),
-                    Background = new SolidColorBrush(Color.FromRgb(12, 9, 38)),
-                    CornerRadius = new CornerRadius(5)
-                };
-                border.Child = new ProgressBar()
-                {
-                    Value = file.CurrentProgress
-                };
-                stack.Children.Add(title);
-                stack.Children.Add(border);
-                dock.Children.Add(stack);
-                DownloadViewer.Children.Add(dock);
-            }
-            Values.Singleton.DownloadQueue[0].IsDownloading = true;
+                    try
+                    {
+                        DownloadFile d = Values.Singleton.DownloadQueue[Values.Singleton.DownloadQueue.Count - 1];
+                        d.IsDownloading = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        log.Error("Unknown Error Occurred While Clicking Play Download Button", ex);
+                    }
+                }
+            };
         }
     }
 }

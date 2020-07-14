@@ -49,7 +49,13 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CLLogger, Version=0.0.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ChaseLabs.Logger.0.0.8\lib\netstandard2.0\CLLogger.dll</HintPath>
+    </Reference>
     <Reference Include="ControlzEx, Version=4.0.0.0, Culture=neutral, PublicKeyToken=69f1c32f803d307e, processorArchitecture=MSIL">
       <HintPath>..\packages\ControlzEx.4.3.1\lib\net462\ControlzEx.dll</HintPath>
     </Reference>
@@ -173,13 +179,25 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Pages\AddDownload.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\Downloads.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Log.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Settings Sections\AccountSettingsSection.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Settings Sections\CacheSettingsSection.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Settings Sections\DownloadSettingsSection.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -239,11 +257,20 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Pages\AddDownload.xaml.cs">
+      <DependentUpon>AddDownload.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Downloads.xaml.cs">
       <DependentUpon>Downloads.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Log.xaml.cs">
+      <DependentUpon>Log.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Settings Sections\AccountSettingsSection.xaml.cs">
       <DependentUpon>AccountSettingsSection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Settings Sections\CacheSettingsSection.xaml.cs">
+      <DependentUpon>CacheSettingsSection.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Settings Sections\DownloadSettingsSection.xaml.cs">
       <DependentUpon>DownloadSettingsSection.xaml</DependentUpon>
@@ -348,6 +375,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="favicon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

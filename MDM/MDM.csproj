@@ -34,6 +34,9 @@
     <Reference Include="CLConfiguration, Version=0.0.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ChaseLabs.Configuration.0.0.4\lib\netstandard2.0\CLConfiguration.dll</HintPath>
     </Reference>
+    <Reference Include="CLLogger, Version=0.0.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ChaseLabs.Logger.0.0.8\lib\netstandard2.0\CLLogger.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -49,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\Configuration.cs" />
+    <Compile Include="Data\DB\Activation.cs" />
     <Compile Include="Data\Values.cs" />
     <Compile Include="Objects\DownloadFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

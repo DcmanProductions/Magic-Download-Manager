@@ -2,10 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace com.drewchaseproject.MDM.Library.Data
 {
@@ -21,9 +19,14 @@ namespace com.drewchaseproject.MDM.Library.Data
         //    }
         //}
 
+        public StackPanel DownloadView { get; set; }
+
         public DownloadFile CurrentFileDownloading { get; set; }
-        List<DownloadFile> _queue;
-        public List<DownloadFile> DownloadQueue { get { if (_queue == null) _queue = new List<DownloadFile>(); return _queue; } set { _queue = value; } }
+
+        public Dispatcher MainDispatcher { get; set; }
+
+        private List<DownloadFile> _queue;
+        public List<DownloadFile> DownloadQueue { get { if (_queue == null) { _queue = new List<DownloadFile>(); } return _queue; } set => _queue = value; }
 
         public int ConnectionsPerProxy
         {
@@ -43,9 +46,18 @@ namespace com.drewchaseproject.MDM.Library.Data
             }
             set
             {
-                if (value > 16) Configuration.Singleton.manager.GetConfigByKey("Max Connections").Value = 16 + "";
-                else if (value < 1) Configuration.Singleton.manager.GetConfigByKey("Max Connections").Value = 1 + "";
-                else Configuration.Singleton.manager.GetConfigByKey("Max Connections").Value = value + "";
+                if (value > 16)
+                {
+                    Configuration.Singleton.manager.GetConfigByKey("Max Connections").Value = 16 + "";
+                }
+                else if (value < 1)
+                {
+                    Configuration.Singleton.manager.GetConfigByKey("Max Connections").Value = 1 + "";
+                }
+                else
+                {
+                    Configuration.Singleton.manager.GetConfigByKey("Max Connections").Value = value + "";
+                }
             }
         }
         public int FileSplitCount
@@ -61,21 +73,24 @@ namespace com.drewchaseproject.MDM.Library.Data
             }
             set
             {
-                if (value < 1) Configuration.Singleton.manager.GetConfigByKey("File Split Count").Value = 1 + "";
-                else Configuration.Singleton.manager.GetConfigByKey("File Split Count").Value = value + "";
+                if (value < 1)
+                {
+                    Configuration.Singleton.manager.GetConfigByKey("File Split Count").Value = 1 + "";
+                }
+                else
+                {
+                    Configuration.Singleton.manager.GetConfigByKey("File Split Count").Value = value + "";
+                }
             }
         }
 
-        public bool PreAllocate { get { return Configuration.Singleton.manager.GetConfigByKey("PreAllocate").ParseBoolean(); } set { Configuration.Singleton.manager.GetConfigByKey("PreAllocate").Value = value + ""; } }
-        public string DownloadDirectory { get { return Configuration.Singleton.manager.GetConfigByKey("Download Directory").Value; } set { Configuration.Singleton.manager.GetConfigByKey("Download Directory").Value = value; } }
+        public bool PreAllocate { get => Configuration.Singleton.manager.GetConfigByKey("PreAllocate").ParseBoolean(); set => Configuration.Singleton.manager.GetConfigByKey("PreAllocate").Value = value + ""; }
+        public string DownloadDirectory { get => Configuration.Singleton.manager.GetConfigByKey("Download Directory").Value; set => Configuration.Singleton.manager.GetConfigByKey("Download Directory").Value = value; }
 
-        string _direct;
+        private string _direct;
         public string DirectDownloadURI
         {
-            get
-            {
-                return _direct;
-            }
+            get => _direct;
             set
             {
                 if (Uri.IsWellFormedUriString(value, UriKind.Absolute))
@@ -96,7 +111,11 @@ namespace com.drewchaseproject.MDM.Library.Data
             get
             {
                 string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), CompanyName, ApplicationName);
-                if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
                 return path;
             }
         }
@@ -105,16 +124,66 @@ namespace com.drewchaseproject.MDM.Library.Data
             get
             {
                 string path = Path.Combine(ApplicationRoot, "Configuration");
-                if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
                 return path;
             }
         }
+        public string LocalVersionFile
+        {
+            get
+            {
+                string path = Path.Combine(ConfigDirectory, "version");
+                return path;
+            }
+        }
+
+        public string VersionURL => @"https://www.dropbox.com/s/7usy168fvc94c1w/Version?dl=1";
+
+        public string ConfigFile
+        {
+            get
+            {
+                string path = Path.Combine(ConfigDirectory, "settings.cfg");
+                return path;
+            }
+        }
+        public string LogFileLocation
+        {
+            get
+            {
+                string path = Path.Combine(LogLocation, "latest.log");
+                return path;
+            }
+        }
+
+        public string LogLocation
+        {
+            get
+            {
+                string path = Path.Combine(ApplicationRoot, "Logs");
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                return path;
+            }
+        }
+
         public string ApplicationDirectory
         {
             get
             {
                 string path = Path.Combine(ApplicationRoot, "Bin");
-                if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
                 return path;
             }
         }
@@ -123,10 +192,16 @@ namespace com.drewchaseproject.MDM.Library.Data
             get
             {
                 string path = Path.Combine(Environment.GetEnvironmentVariable("temp", EnvironmentVariableTarget.User), CompanyName, ApplicationName);
-                if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
                 return path;
             }
         }
+
+        public TextBlock ConsoleLogBlock { get; set; }
 
     }
 }

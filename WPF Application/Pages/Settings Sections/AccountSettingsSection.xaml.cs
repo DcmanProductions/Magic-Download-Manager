@@ -1,17 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+using System.Data;
+using System.Data.SqlClient;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace com.drewchaseproject.MDM.WPF.Pages.Settings_Sections
 {
@@ -23,16 +13,34 @@ namespace com.drewchaseproject.MDM.WPF.Pages.Settings_Sections
         public AccountSettingsSection()
         {
             InitializeComponent();
+            Setup();
+            RegisterEvents();
         }
 
-        void Setup()
+        private void Setup()
         {
-
+            SqlConnection connection = null;
+            try
+            {
+                connection = new SqlConnection("SERVER = drewchaseproject.com; DATABASE = dbvk8n7ktfcee7; PORT = 3306; USER ID = ue6zchn3j43vw; PASSWORD = 11d_[beg1((b");
+                connection.Open();
+            }
+            catch
+            {
+                Console.WriteLine("Connection String Invalid");
+            }
+            finally
+            {
+                if (connection != null && connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                }
+            }
         }
 
-        void RegisterEvents()
+        private void RegisterEvents()
         {
-
+            //ActivateAccountButton.Click += (s, e) => Activation.ActivateSoftware(EmailTxtBx.Text, PasswdTxtBx.Password);
         }
     }
 }

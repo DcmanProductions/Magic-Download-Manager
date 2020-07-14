@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace com.drewchaseproject.MDM.WPF
+namespace Launcher
 {
     /// <summary>
     /// Interaction logic for App.xaml
