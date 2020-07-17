@@ -1,6 +1,5 @@
-﻿using System;
-using System.Data;
-using System.Data.SqlClient;
+﻿using com.drewchaseproject.MDM.Library.Data;
+using com.drewchaseproject.MDM.Library.Data.DB;
 using System.Windows.Controls;
 
 namespace com.drewchaseproject.MDM.WPF.Pages.Settings_Sections
@@ -19,28 +18,33 @@ namespace com.drewchaseproject.MDM.WPF.Pages.Settings_Sections
 
         private void Setup()
         {
-            SqlConnection connection = null;
-            try
+            if (Values.Singleton.Activated)
             {
-                connection = new SqlConnection("SERVER = drewchaseproject.com; DATABASE = dbvk8n7ktfcee7; PORT = 3306; USER ID = ue6zchn3j43vw; PASSWORD = 11d_[beg1((b");
-                connection.Open();
+                LoginSection.Visibility = System.Windows.Visibility.Collapsed;
+                LoggedInSection.Visibility = System.Windows.Visibility.Visible;
+                LoginText.Content = $"Welcome {Values.Singleton.Username}";
             }
-            catch
+            else
             {
-                Console.WriteLine("Connection String Invalid");
-            }
-            finally
-            {
-                if (connection != null && connection.State == ConnectionState.Open)
-                {
-                    connection.Close();
-                }
+                LoginSection.Visibility = System.Windows.Visibility.Visible;
+                LoggedInSection.Visibility = System.Windows.Visibility.Collapsed;
             }
         }
 
         private void RegisterEvents()
         {
-            //ActivateAccountButton.Click += (s, e) => Activation.ActivateSoftware(EmailTxtBx.Text, PasswdTxtBx.Password);
+            ActivateAccountButton.Click += (s, e) =>
+            {
+                bool act = Activation.IsAuthorizedUser(EmailTxtBx.Text, PasswdTxtBx.Password);
+                if (act)
+                {
+                    Values.Singleton.Activated = true;
+                    Values.Singleton.Username = EmailTxtBx.Text;
+                    Values.Singleton.Password = PasswdTxtBx.Password;
+                    MainWindow.Singleton.ChangeView(MainWindow.PageType.Settings);
+                    MainWindow.Singleton.MenuBar.Visibility = System.Windows.Visibility.Visible;
+                }
+            };
         }
     }
 }

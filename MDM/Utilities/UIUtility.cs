@@ -84,51 +84,18 @@ namespace com.drewchaseproject.MDM.Library.Utilities
         }
 
 
-        public static void GenerateDownloadUI(StackPanel DownloadViewer, params DownloadFile[] files)
-        {
-            DownloadViewer.Children.Clear();
-            if (files.Length > 0)
-            {
-                Values.Singleton.DownloadQueue.AddRange(files);
-            }
-            foreach (DownloadFile file in Values.Singleton.DownloadQueue)
-            {
-                DockPanel dock = new DockPanel()
-                {
-                    HorizontalAlignment = HorizontalAlignment.Stretch
-                };
-                StackPanel stack = new StackPanel()
-                {
-                    HorizontalAlignment = HorizontalAlignment.Stretch
-                };
-                TextBlock title = new TextBlock()
-                {
-                    TextTrimming = TextTrimming.CharacterEllipsis,
-                    Text = file.FileName,
-                    FontSize = 24,
-                    Foreground = new SolidColorBrush(Color.FromRgb(231, 52, 120))
-                };
-
-                Border border = new Border()
-                {
-                    BorderThickness = new Thickness(10),
-                    BorderBrush = new SolidColorBrush(Color.FromRgb(12, 9, 38)),
-                    Background = new SolidColorBrush(Color.FromRgb(12, 9, 38)),
-                    CornerRadius = new CornerRadius(5)
-                };
-                ProgressBar bar = new ProgressBar()
-                {
-                    Value = file.CurrentProgress
-                };
-                file.ProgressBar = bar;
-                border.Child = bar;
-
-                stack.Children.Add(title);
-                stack.Children.Add(border);
-                dock.Children.Add(stack);
-                DownloadViewer.Children.Add(dock);
-            }
-        }
+        //public static void GenerateDownloadUI(StackPanel DownloadViewer, params DownloadFile[] files)
+        //{
+        //    DownloadViewer.Children.Clear();
+        //    if (files.Length > 0)
+        //    {
+        //        Values.Singleton.DownloadQueue.AddRange(files);
+        //    }
+        //    foreach (DownloadFile file in Values.Singleton.DownloadQueue)
+        //    {
+        //        DownloadViewer.Children.Add(new DownloadTemplate);
+        //    }
+        //}
 
 
     }

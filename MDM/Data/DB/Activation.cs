@@ -1,79 +1,40 @@
 ﻿using System;
-using System.Data.SqlClient;
-using System.Windows;
+using System.Net;
 
 namespace com.drewchaseproject.MDM.Library.Data.DB
 {
     public class Activation
     {
-        private const string connection_string = "SERVER = giow1059.siteground.us; DATABASE = dbvk8n7ktfcee7; USER ID = ue6zchn3j43vw; PASSWORD = 11d_[beg1((b";
-        private static bool Activated { get; set; }
 
-        public static bool isActivated(string username, string password)
+        public static bool IsAuthorizedUser(string username, string password)
         {
-            using (SqlConnection sqlConn = new SqlConnection(connection_string))
+            if (username == "" || password == "")
             {
-                string checkForActivationQuery = "SELECT activated FROM ActivationTable WHERE username = @username AND password = @password";
-                SqlCommand cmd = new SqlCommand(checkForActivationQuery, sqlConn);
-                cmd.Parameters.AddWithValue("@username", username);
-                cmd.Parameters.AddWithValue("@password", password);
-                sqlConn.Open();
-                int result = Convert.ToInt32(cmd.ExecuteScalar());
-                if (result > 0)
-                {
-                    return true;
-                }
-
                 return false;
             }
-        }
 
-        public static void ActivateSoftware(string username, string password)
-        {
-            if (!isActivated(username, password))
+            try
             {
-                using (SqlConnection sqlConn = new SqlConnection(connection_string))
+                string url = $"https://auth.drewchaseproject.com/mdm.php?username={username}&password={password}";
+                using (WebClient client = new WebClient())
                 {
-                    string checkForKeyQuery = "SELECT COUNT(*) FROM ActivationTable WHERE username = @username AND password = @password";
-                    SqlCommand cmd = new SqlCommand(checkForKeyQuery, sqlConn);
-                    cmd.Parameters.AddWithValue("@username", username);
-                    cmd.Parameters.AddWithValue("@password", password);
-                    sqlConn.Open();
-                    int result = Convert.ToInt32(cmd.ExecuteScalar());
-                    if (result > 0)
+                    string text = client.DownloadString(url);
+                    Console.WriteLine(text);
+                    if (text.ToLower().Equals("NOT AUTHORIZED".ToLower()) || text.ToLower().Equals("Either The Username or Password Were not valid".ToLower()))
                     {
-                        updateActivation(username, password);
-                        Activated = true;
+                        return false;
                     }
-                    else
+                    else if (text.ToLower().Equals("Authorized".ToLower()))
                     {
-                        MessageBox.Show("Your Key Was Incorrect");
-                        Console.WriteLine("Your Key Was Incorrect");
-                        Activated = false;
+                        return true;
                     }
                 }
             }
-            else
+            catch
             {
-                MessageBox.Show("Your Software is Already Activated");
-                Console.WriteLine("Your Software is Already Activated");
-                Activated = true;
+                return false;
             }
-        }
-
-        private static void updateActivation(string username, string password)
-        {
-            using (SqlConnection sqlConn = new SqlConnection(connection_string))
-            {
-                string updateQuery = "UPDATE ActivationTable SET activated = 1 WHERE WHERE username = @username AND password = @password";
-                SqlCommand cmd = new SqlCommand(updateQuery, sqlConn);
-                cmd.Parameters.AddWithValue("@username", username);
-                cmd.Parameters.AddWithValue("@password", password);
-                sqlConn.Open();
-                cmd.ExecuteNonQuery();
-                MessageBox.Show("Your Software has Been Activated");
-                Console.WriteLine("Your Software has Been Activated");
-            }
+            return false;
         }
 
     }

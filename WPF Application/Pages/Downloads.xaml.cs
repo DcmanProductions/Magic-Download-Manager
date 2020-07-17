@@ -1,9 +1,8 @@
 ﻿using com.drewchaseproject.MDM.Library.Data;
 using com.drewchaseproject.MDM.Library.Objects;
 using com.drewchaseproject.MDM.Library.Utilities;
+using com.drewchaseproject.MDM.WPF.Pages.Template;
 using System;
-using System.Diagnostics;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -24,7 +23,7 @@ namespace com.drewchaseproject.MDM.WPF.Pages
                 {
                     _singleton = new Downloads();
                 }
-
+                //Downloads.Singleton.LoadDownloads();
                 return _singleton;
             }
         }
@@ -34,7 +33,14 @@ namespace com.drewchaseproject.MDM.WPF.Pages
             InitializeComponent();
             RegisterEvents();
             Values.Singleton.DownloadView = DownloadViewer;
-            UIUtility.GenerateDownloadUI(DownloadViewer);
+            //UIUtility.GenerateDownloadUI(DownloadViewer);
+            LoadDownloads();
+        }
+
+        public void LoadDownloads()
+        {
+            DownloadViewer.Children.Clear();
+            Values.Singleton.DownloadQueue.ForEach((n) => DownloadViewer.Children.Add(new Frame() { Content = new DownloadTemplate(n) }));
         }
 
         private void RegisterEvents()
@@ -49,7 +55,7 @@ namespace com.drewchaseproject.MDM.WPF.Pages
                 {
                     try
                     {
-                        DownloadFile d = Values.Singleton.DownloadQueue[Values.Singleton.DownloadQueue.Count - 1];
+                        DownloadFile d = Values.Singleton.DownloadQueue[0];
                         d.IsDownloading = true;
                     }
                     catch (Exception ex)

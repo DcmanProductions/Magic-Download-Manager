@@ -1,8 +1,11 @@
 ﻿using com.drewchaseproject.MDM.Library.Data;
 using com.drewchaseproject.MDM.Library.Objects;
 using com.drewchaseproject.MDM.Library.Utilities;
+using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace com.drewchaseproject.MDM.WPF.Pages
 {
@@ -17,6 +20,7 @@ namespace com.drewchaseproject.MDM.WPF.Pages
             InitializeComponent();
             Setup();
             RegisterEvents();
+            //Update();
         }
 
         private void Setup()
@@ -31,7 +35,8 @@ namespace com.drewchaseproject.MDM.WPF.Pages
             ConnectionsTextBox.Text = Values.Singleton.ConnectionsPerProxy + "";
             split = Values.Singleton.FileSplitCount;
             proxy = Values.Singleton.ConnectionsPerProxy;
-
+            Update();
+            CheckValidDownload();
         }
 
         private void RegisterEvents()
@@ -46,9 +51,14 @@ namespace com.drewchaseproject.MDM.WPF.Pages
                 {
                     LocalDownloadSettings.Visibility = Visibility.Visible;
                 }
+                CheckValidDownload();
             };
 
-            DownloadLocationBtn.Click += (s, e) => FileUtilities.OpenFolder(DownloadLocationTextBlock.Text, "Select Download Location for This File");
+            DownloadLocationBtn.Click += (s, e) =>
+            {
+                FileUtilities.OpenFolder(DownloadLocationTextBlock.Text, "Select Download Location for This File");
+                CheckValidDownload();
+            };
 
             ConnectionsTextBox.TextChanged += (s, e) =>
             {
@@ -69,6 +79,7 @@ namespace com.drewchaseproject.MDM.WPF.Pages
                         proxy = 16;
                     }
                 }
+                CheckValidDownload();
                 ConnectionsTextBox.Text = proxy + "";
             };
 
@@ -86,17 +97,62 @@ namespace com.drewchaseproject.MDM.WPF.Pages
                         split = 1;
                     }
                 }
+                CheckValidDownload();
                 SplitTextBox.Text = split + "";
+            };
+
+            URLTextBox.LostFocus += (s, e) =>
+            {
+                CheckValidDownload();
             };
 
             AddDownloadBtn.Click += (s, e) =>
             {
                 Added = true;
-                UIUtility.GenerateDownloadUI(Downloads.Singleton.DownloadViewer, GetDownloadFile);
+                //UIUtility.GenerateDownloadUI(Downloads.Singleton.DownloadViewer, GetDownloadFile);
+                Values.Singleton.DownloadQueue.Add(GetDownloadFile);
+                Downloads.Singleton.LoadDownloads();
                 MainWindow.Singleton.Main.Content = Downloads.Singleton;
             };
 
         }
+
+        private void Update()
+        {
+            Dispatcher dis = Values.Singleton.MainDispatcher;
+            double seconds = 1;
+            long currentTime = DateTime.Now.Ticks, neededTime = 0;
+            neededTime = DateTime.Now.AddSeconds(seconds).Ticks;
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    currentTime = DateTime.Now.Ticks;
+                    if (currentTime >= neededTime)
+                    {
+                        dis.Invoke(new Action(() =>
+                        {
+                            CheckValidDownload();
+                        }), DispatcherPriority.ContextIdle);
+                        neededTime = DateTime.Now.AddSeconds(seconds).Ticks;
+                    }
+                }
+            });
+        }
+
+        private void CheckValidDownload()
+        {
+
+            if (!string.IsNullOrEmpty(URLTextBox.Text) && NetworkUtility.IsValidDownloadUrl(URLTextBox.Text) && ( UIUtility.GetCheckBox(UseGlobalCheckBtn) || FileUtilities.IsValidPath(DownloadLocationTextBlock.Text) ))
+            {
+                AddDownloadBtn.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                AddDownloadBtn.Visibility = Visibility.Collapsed;
+            }
+        }
+
 
         public bool Added { get; private set; }
 

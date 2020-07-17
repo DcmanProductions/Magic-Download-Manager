@@ -15,9 +15,14 @@ namespace com.drewchaseproject.MDM.WPF.Pages
         {
             log.Debug("Loading Settings Page");
             InitializeComponent();
-
-            LoadPages(new DownloadSettingsSection(), new AccountSettingsSection(), new CacheSettingsSection());
-
+            if (Values.Singleton.Activated)
+            {
+                LoadPages(new AccountSettingsSection(), new DownloadSettingsSection(), new CacheSettingsSection());
+            }
+            else
+            {
+                LoadPages(new AccountSettingsSection());
+            }
         }
 
         private void LoadPages(params Page[] pages)

@@ -42,7 +42,7 @@
         </Grid>
         
         <!-- Left Menu Bar -->
-        <Grid HorizontalAlignment="Left" Background="#281D7D" Grid.Column="0" Grid.ColumnSpan="1" Grid.RowSpan="2" >
+        <Grid Name="MenuBar" HorizontalAlignment="Left" Background="#281D7D" Grid.Column="0" Grid.ColumnSpan="1" Grid.RowSpan="2" >
             <Viewbox VerticalAlignment="Top">
                 <StackPanel >
                     <Button Name="MenuViewBtn" Width="33" Height="33" Margin="0 10">

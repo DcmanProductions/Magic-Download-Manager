@@ -50,5 +50,33 @@ namespace com.drewchaseproject.MDM.Library.Utilities
                 File.Delete(Values.Singleton.ConfigFile);
             }
         }
+
+        public static bool IsValidPath(string path, bool allowRelativePaths = false)
+        {
+            bool isValid = true;
+
+            try
+            {
+                string fullPath = Path.GetFullPath(path);
+
+                if (allowRelativePaths)
+                {
+                    isValid = Path.IsPathRooted(path);
+                }
+                else
+                {
+                    string root = Path.GetPathRoot(path);
+                    isValid = string.IsNullOrEmpty(root.Trim(new char[] { '\\', '/' })) == false;
+                }
+            }
+            catch (Exception ex)
+            {
+                isValid = false;
+                log.Error("An Error has Occurred while Checking Valid Path", ex);
+            }
+
+            return isValid;
+        }
+
     }
 }

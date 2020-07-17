@@ -4,6 +4,7 @@ using com.drewchaseproject.MDM.Library.Properties;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 
@@ -11,19 +12,18 @@ namespace com.drewchaseproject.MDM.Library.Utilities
 {
     public class FastDownloadExecutableUtility
     {
-        Dispatcher dis = Values.Singleton.MainDispatcher;
+        private readonly Dispatcher dis = Values.Singleton.MainDispatcher;
         private static readonly ChaseLabs.CLLogger.LogManger log = ChaseLabs.CLLogger.LogManger.Init().SetLogDirectory(Values.Singleton.LogFileLocation).EnableDefaultConsoleLogging().SetMinLogType(ChaseLabs.CLLogger.Lists.LogTypes.All);
         public static string GenerateExecutable()
         {
             log.Info("Generating Download Executable");
             string path = Path.Combine(Values.Singleton.TempDirectory, "mdm.exe");
-            if (File.Exists(path))
+            if (!File.Exists(path))
             {
-                File.Delete(path);
+                File.WriteAllBytes(path, Resources.fdl);
+                File.SetAttributes(path, FileAttributes.Hidden);
             }
 
-            File.WriteAllBytes(path, Resources.fdl);
-            File.SetAttributes(path, FileAttributes.Hidden);
             return path;
         }
 
@@ -42,7 +42,7 @@ namespace com.drewchaseproject.MDM.Library.Utilities
             return await Task.Run(() => Execute(file));
         }
 
-        Process Execute(DownloadFile file)
+        private Process Execute(DownloadFile file)
         {
             int split = 1, conn = 1;
             string dir = @"", uri = "";
@@ -59,12 +59,18 @@ namespace com.drewchaseproject.MDM.Library.Utilities
             log.Info("Running Download Executable", $"Application Arguments = -s{split} -x{conn} -d{dir} {uri} --file-allocation={( pre ? "prealloc" : "none" )}");
 
             string exe = GenerateExecutable();
-
             Process pro = new Process
             {
                 StartInfo = new ProcessStartInfo() { FileName = exe, Arguments = $"-s{split} -x{conn} -d{dir} {uri} --file-allocation={( pre ? "prealloc" : "none" )}", CreateNoWindow = true, UseShellExecute = false, RedirectStandardOutput = true }
             };
+
             pro.Start();
+
+            dis.Invoke(new Action(() =>
+            {
+                Values.Singleton.CurrentFileDownloading.DownloadFileProcess = pro;
+            }), DispatcherPriority.Normal);
+
             pro.Exited += (sx, ex) =>
             {
             };
@@ -77,13 +83,24 @@ namespace com.drewchaseproject.MDM.Library.Utilities
                     dis.Invoke(new Action(() =>
                     {
                         Values.Singleton.CurrentFileDownloading.IsDownloading = false;
+                        Values.Singleton.CompletedDownloads.Add(Values.Singleton.CurrentFileDownloading);
                         Values.Singleton.DownloadQueue.Remove(Values.Singleton.CurrentFileDownloading);
                         Values.Singleton.CurrentFileDownloading.ProgressBar.Value = 100;
-                        UIUtility.GenerateDownloadUI(Values.Singleton.DownloadView);
+                        if (Values.Singleton.DownloadQueue.Count > 0)
+                        {
+                            Values.Singleton.DownloadQueue[0].IsDownloading = true;
+                        }
+                        else
+                        {
+                            Values.Singleton.CurrentFileDownloading = null;
+                        }
                     }), DispatcherPriority.ContextIdle);
                 }
-                if(!string.IsNullOrWhiteSpace(line))
-                log.Debug(line);
+                if (!string.IsNullOrWhiteSpace(line))
+                {
+                    log.Debug(line);
+                }
+
                 string percent = "";
                 bool isIn = false;
                 foreach (char c in line.ToCharArray())
@@ -103,12 +120,24 @@ namespace com.drewchaseproject.MDM.Library.Utilities
                         isIn = false;
                     }
                 }
+
+                //430MiB / 2.5GiB
+                var v = line.Replace("(", " ").Replace(")", "").Replace("/", " / ").Split(' ');
+
+                for (int j = 0; j < v.Length; j++)
+                {
+                    Console.WriteLine($"{j} = {v[j]}");
+                }
+
+                Environment.Exit(0);
+
                 if (!string.IsNullOrWhiteSpace(percent) && int.TryParse(percent.Replace("%", ""), out int i))
                 {
                     dis.Invoke(new Action(() =>
                     {
                         Values.Singleton.CurrentFileDownloading.CurrentProgress = i;
                         Values.Singleton.CurrentFileDownloading.ProgressBar.Value = i;
+                        Values.Singleton.CurrentFileDownloading.DownloadInformation.Text = $"{i}% (/)";
                     }), System.Windows.Threading.DispatcherPriority.Normal);
                 }
 

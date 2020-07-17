@@ -20,6 +20,8 @@ namespace com.drewchaseproject.MDM.Library.Data
             manager.Add(new Config("Max Connections", "16", manager));
             manager.Add(new Config("File Split Count", "100", manager));
             manager.Add(new Config("PreAllocate", "false", manager));
+            manager.Add(new Config("Username", "", manager));
+            manager.Add(new Config("Password", "", manager));
             manager.Add(new Config("Download Directory", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads"), manager));
             manager.List().ForEach((n) => log.Debug($"Loading Config for {n.Key} with Value of {n.Value}"));
         }

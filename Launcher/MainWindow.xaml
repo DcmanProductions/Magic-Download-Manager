@@ -8,15 +8,12 @@
         WindowStartupLocation="CenterScreen"
         xmlns:gif="http://wpfanimatedgif.codeplex.com"
         ResizeMode="NoResize"
-        Background="#262626"
+        Background="#140F40"
         Foreground="White"
         mc:Ignorable="d"
-        Title="SyncHole Launcher" Height="540" Width="960">
+        Title="Magic Download Manager Launcher" Height="540" Width="960">
     <Grid>
-        <Image HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="540" Width="960" gif:ImageBehavior.AnimatedSource="Resources/Images/Magic-Download-Manager-Animated-Wallpaper.gif" Margin="0"/>
         <Button Name="ExitBtn" Content="X" HorizontalAlignment="Right" VerticalAlignment="Top" Width="40" Height="40" Background="Transparent" BorderThickness="0" Foreground="White" FontSize="14" />
-        <Viewbox Margin="385,432,340,58">
-            <Label x:Name="status_lbl" Foreground="White" FontSize="30" Content="Loading..." HorizontalContentAlignment="Center" VerticalContentAlignment="Center"  />
-        </Viewbox>
+        <Frame Name="Main" NavigationUIVisibility="Hidden" />
     </Grid>
 </Window>

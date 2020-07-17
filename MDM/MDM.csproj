@@ -63,6 +63,7 @@
     </Compile>
     <Compile Include="Utilities\FastDownloadExecutableUtility.cs" />
     <Compile Include="Utilities\FileUtilities.cs" />
+    <Compile Include="Utilities\NetworkUtility.cs" />
     <Compile Include="Utilities\RegexUtilities.cs" />
     <Compile Include="Utilities\UIUtility.cs" />
   </ItemGroup>

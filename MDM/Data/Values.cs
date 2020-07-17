@@ -11,13 +11,11 @@ namespace com.drewchaseproject.MDM.Library.Data
     {
         private static Values _singleton;
         public static Values Singleton => _singleton == null ? _singleton = new Values() : _singleton;
-        //{
-        //    get
-        //    {
-        //        if (_singleton == null) _singleton = new Values();
-        //        return _singleton;
-        //    }
-        //}
+
+        public bool Activated { get; set; }
+
+        public string Username { get => Configuration.Singleton.manager.GetConfigByKey("Username").Value; set => Configuration.Singleton.manager.GetConfigByKey("Username").Value = value; }
+        public string Password { get => Configuration.Singleton.manager.GetConfigByKey("Password").Value; set => Configuration.Singleton.manager.GetConfigByKey("Password").Value = value; }
 
         public StackPanel DownloadView { get; set; }
 
@@ -27,6 +25,9 @@ namespace com.drewchaseproject.MDM.Library.Data
 
         private List<DownloadFile> _queue;
         public List<DownloadFile> DownloadQueue { get { if (_queue == null) { _queue = new List<DownloadFile>(); } return _queue; } set => _queue = value; }
+
+        private List<DownloadFile> _doneQueue;
+        public List<DownloadFile> CompletedDownloads { get { if (_doneQueue == null) { _doneQueue = new List<DownloadFile>(); } return _doneQueue; } set => _doneQueue = value; }
 
         public int ConnectionsPerProxy
         {
@@ -141,7 +142,7 @@ namespace com.drewchaseproject.MDM.Library.Data
             }
         }
 
-        public string VersionURL => @"https://www.dropbox.com/s/7usy168fvc94c1w/Version?dl=1";
+        public string VersionURL => @"https://dl.drewchaseproject.com/MDM/Version";
 
         public string ConfigFile
         {

@@ -1,13 +1,14 @@
 ﻿using com.drewchaseproject.MDM.Library.Data;
+using com.drewchaseproject.MDM.Library.Data.DB;
 using com.drewchaseproject.MDM.Library.Utilities;
 using com.drewchaseproject.MDM.WPF.Pages;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Web.UI.WebControls;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Threading;
 
 namespace com.drewchaseproject.MDM.WPF
 {
@@ -142,6 +143,8 @@ namespace com.drewchaseproject.MDM.WPF
             Setup();
             RegisterEvents();
 
+            CheckAuth();
+
         }
 
         public enum PageType
@@ -155,6 +158,7 @@ namespace com.drewchaseproject.MDM.WPF
 
         private void Setup()
         {
+
             Values.Singleton.MainDispatcher = Application.Current.Dispatcher;
             if (File.Exists(Values.Singleton.LogFileLocation))
             {
@@ -200,6 +204,20 @@ namespace com.drewchaseproject.MDM.WPF
 
         }
 
+        private void CheckAuth()
+        {
+            if (!Activation.IsAuthorizedUser(Values.Singleton.Username, Values.Singleton.Password))
+            {
+                Values.Singleton.Activated = false;
+                MenuBar.Visibility = Visibility.Collapsed;
+                ChangeView(PageType.Settings);
+            }
+            else
+            {
+                Values.Singleton.Activated = true;
+            }
+        }
+
         private void PreClose()
         {
             OnExit();
@@ -209,9 +227,12 @@ namespace com.drewchaseproject.MDM.WPF
         private void OnExit()
         {
             FastDownloadExecutableUtility.DestroyExecutable();
+
+            if (!Values.Singleton.CurrentFileDownloading.DownloadFileProcess.HasExited)
+                Values.Singleton.CurrentFileDownloading.DownloadFileProcess.Kill();
         }
 
-        private void ChangeView(PageType page)
+        public void ChangeView(PageType page)
         {
             switch (page)
             {
