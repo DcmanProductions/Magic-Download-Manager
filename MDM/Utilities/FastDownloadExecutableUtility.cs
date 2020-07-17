@@ -131,8 +131,11 @@ namespace com.drewchaseproject.MDM.Library.Utilities
                         eta = v[7].Replace("ETA:", "").Replace("]", "");
                         dis.Invoke(new Action(() =>
                         {
-                            Values.Singleton.CurrentFileDownloading.ProgressBar.Value = percent;
-                            Values.Singleton.CurrentFileDownloading.DownloadInformation.Text = $"{percent}% ({currentSize} / {fullSize}) ETA: {eta} Speed: {speed}";
+                            if (Values.Singleton.CurrentFileDownloading != null && Values.Singleton.CurrentFileDownloading.ProgressBar != null && Values.Singleton.CurrentFileDownloading.DownloadInformation != null)
+                            {
+                                Values.Singleton.CurrentFileDownloading.ProgressBar.Value = percent;
+                                Values.Singleton.CurrentFileDownloading.DownloadInformation.Text = $"{percent}% ({currentSize} / {fullSize}) ETA: {eta} Speed: {speed}";
+                            }
                         }), System.Windows.Threading.DispatcherPriority.Normal);
                         log.Debug($"{percent}% ({currentSize} / {fullSize}) ETA: {eta} Speed: {speed}");
                     }
