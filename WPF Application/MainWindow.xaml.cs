@@ -227,9 +227,12 @@ namespace com.drewchaseproject.MDM.WPF
         private void OnExit()
         {
             FastDownloadExecutableUtility.DestroyExecutable();
-
-            if (!Values.Singleton.CurrentFileDownloading.DownloadFileProcess.HasExited)
-                Values.Singleton.CurrentFileDownloading.DownloadFileProcess.Kill();
+            try
+            {
+                if ( Values.Singleton.CurrentFileDownloading != null && Values.Singleton.CurrentFileDownloading.DownloadFileProcess != null && !Values.Singleton.CurrentFileDownloading.DownloadFileProcess.HasExited )
+                    Values.Singleton.CurrentFileDownloading.DownloadFileProcess.Kill();
+            }
+            catch { }
         }
 
         public void ChangeView(PageType page)

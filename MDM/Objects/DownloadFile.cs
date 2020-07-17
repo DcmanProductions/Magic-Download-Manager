@@ -102,7 +102,7 @@ namespace com.drewchaseproject.MDM.Library.Objects
 
         public bool PreAllocate { get; set; }
         public ProgressBar ProgressBar { get; set; }
-        public TextBox DownloadInformation { get; set; }
+        public TextBlock DownloadInformation { get; set; }
         public Process DownloadFileProcess { get; set; }
 
         private bool _isdownloading = false;

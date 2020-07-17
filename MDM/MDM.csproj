@@ -61,6 +61,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\DataUtility.cs" />
     <Compile Include="Utilities\FastDownloadExecutableUtility.cs" />
     <Compile Include="Utilities\FileUtilities.cs" />
     <Compile Include="Utilities\NetworkUtility.cs" />

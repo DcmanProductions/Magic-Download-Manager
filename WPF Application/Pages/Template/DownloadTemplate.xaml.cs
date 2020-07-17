@@ -29,6 +29,9 @@ namespace com.drewchaseproject.MDM.WPF.Pages.Template
             downloadFile = file;
             DownloadTitle.Text = downloadFile.FileName;
             downloadFile.ProgressBar = DownloadProgressBar;
+            DownloadInformation.Text = "";
+            downloadFile.DownloadInformation = DownloadInformation;
+
             downloadFile.ProgressBar.ValueChanged += (s, e) =>
             {
                 DownloadInformation.Text = $"{downloadFile.ProgressBar.Value}%";
@@ -40,6 +43,11 @@ namespace com.drewchaseproject.MDM.WPF.Pages.Template
                 Downloads.Singleton.LoadDownloads();
                 if (!file.DownloadFileProcess.HasExited)
                     file.DownloadFileProcess.Kill();
+
+                if (Values.Singleton.DownloadQueue.Count > 0)
+                    Values.Singleton.DownloadQueue[0].IsDownloading = true;
+                else
+                    Values.Singleton.CurrentFileDownloading = null;
             };
 
         }

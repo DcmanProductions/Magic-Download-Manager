@@ -12,10 +12,10 @@
     <Grid>
         <DockPanel HorizontalAlignment="Stretch">
             <StackPanel HorizontalAlignment="Stretch">
-                <Grid>
-                    <TextBlock x:Name="DownloadTitle" Text="Hello" TextTrimming="CharacterEllipsis" Foreground="#E73478" FontSize="24" Margin="0,0,510,0" />
-                    <TextBlock x:Name="DownloadInformation" Text="0%" Foreground="#E73478" FontSize="24" HorizontalAlignment="Center" />
-                </Grid>
+                <DockPanel>
+                    <TextBlock x:Name="DownloadTitle" Text="Hello" TextTrimming="CharacterEllipsis" Foreground="#E73478" FontSize="24" Margin="0,0,50,0" Width="200" />
+                    <TextBlock x:Name="DownloadInformation" Text="1% (35Mb / 2.5Gb) ETA: 2m8s Speed: 19mb/s" TextAlignment="Left" Foreground="#E73478" FontSize="24" />
+                </DockPanel>
                 <Border BorderThickness="10" BorderBrush="#0C0926">
                     <Grid Background="#0C0926" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  >
                         <Button Name="RemoveBtn" Content="X" Width="25" HorizontalAlignment="Right" Foreground="Red" />

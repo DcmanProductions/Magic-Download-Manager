@@ -33,7 +33,14 @@ namespace com.drewchaseproject.MDM.Library.Utilities
             string path = Path.Combine(Values.Singleton.TempDirectory, "mdm.exe");
             if (File.Exists(path))
             {
-                File.Delete(path);
+                try
+                {
+                    File.Delete(path);
+                }
+                catch
+                {
+
+                }
             }
         }
 
@@ -96,51 +103,44 @@ namespace com.drewchaseproject.MDM.Library.Utilities
                         }
                     }), DispatcherPriority.ContextIdle);
                 }
-                if (!string.IsNullOrWhiteSpace(line))
-                {
-                    log.Debug(line);
-                }
+                if (string.IsNullOrWhiteSpace(line))
+                    continue;
 
-                string percent = "";
-                bool isIn = false;
-                foreach (char c in line.ToCharArray())
+                string currentSize = "N/A", fullSize = "N/A", speed = "N/A", eta = "N/A";
+                double percent = 0;
+
+                /*
+                 * 0 = [#1d9d98
+                 * 1 = 14MiB
+                 * 2 = /
+                 * 3 = 2.5GiB
+                 * 4 = 0
+                 * 5 = CN:
+                 * 6 = DL:
+                 * 7 = ETA:2m25s]
+                 */
+                string[] v = line.Replace("(", " ").Replace(")", "").Replace("/", " / ").Split(' ');
+                if (v.Length >= 6)
                 {
-                    if (isIn && c != '(' && c != ')')
+                    try
                     {
-                        percent += c;
+                        currentSize = v[1].Replace("MiB", "Mb").Replace("GiB", "Gb");
+                        fullSize = v[3].Replace("MiB", "Mb").Replace("GiB", "Gb");
+                        double.TryParse(DataUtility.GetNumbers(v[4]), out percent);
+                        speed = v[6].Replace("DL:", "").Replace("MiB", "mb/s").Replace("GiB", "gb/s");
+                        eta = v[7].Replace("ETA:", "").Replace("]", "");
+                        dis.Invoke(new Action(() =>
+                        {
+                            Values.Singleton.CurrentFileDownloading.ProgressBar.Value = percent;
+                            Values.Singleton.CurrentFileDownloading.DownloadInformation.Text = $"{percent}% ({currentSize} / {fullSize}) ETA: {eta} Speed: {speed}";
+                        }), System.Windows.Threading.DispatcherPriority.Normal);
+                        log.Debug($"{percent}% ({currentSize} / {fullSize}) ETA: {eta} Speed: {speed}");
                     }
-
-                    if (c == '(')
+                    catch
                     {
-                        isIn = true;
-                    }
 
-                    if (c == ')')
-                    {
-                        isIn = false;
                     }
                 }
-
-                //430MiB / 2.5GiB
-                var v = line.Replace("(", " ").Replace(")", "").Replace("/", " / ").Split(' ');
-
-                for (int j = 0; j < v.Length; j++)
-                {
-                    Console.WriteLine($"{j} = {v[j]}");
-                }
-
-                Environment.Exit(0);
-
-                if (!string.IsNullOrWhiteSpace(percent) && int.TryParse(percent.Replace("%", ""), out int i))
-                {
-                    dis.Invoke(new Action(() =>
-                    {
-                        Values.Singleton.CurrentFileDownloading.CurrentProgress = i;
-                        Values.Singleton.CurrentFileDownloading.ProgressBar.Value = i;
-                        Values.Singleton.CurrentFileDownloading.DownloadInformation.Text = $"{i}% (/)";
-                    }), System.Windows.Threading.DispatcherPriority.Normal);
-                }
-
             }
             return pro;
         }
