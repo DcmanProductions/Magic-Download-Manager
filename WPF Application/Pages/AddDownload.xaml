@@ -29,7 +29,7 @@
                     <StackPanel Margin="0">
                         <StackPanel HorizontalAlignment="Center" Margin="100 10" >
                             <Label Content="Use Global" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" FontStretch="Expanded" FontSize="24" />
-                            <Border BorderThickness="10" BorderBrush="#0C0926" Background="#0C0926" CornerRadius="5" >
+                            <Border BorderThickness="10" BorderBrush="#0C0926" Background="#0C0926" CornerRadius="5" Width="540" >
                                 <Button Name="UseGlobalCheckBtn" HorizontalAlignment="Left" BorderThickness="0">
                                     <DockPanel>
                                         <Image Width="24" Source="..\Resources\Transparent\Check Mark.png" Margin="0 0 10 0" />
@@ -87,17 +87,22 @@
                             <StackPanel HorizontalAlignment="Stretch" Margin="0" MinWidth="500" MaxWidth="1000" Width="550">
                                 <Label Content="Download URL" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" FontStretch="Expanded" FontSize="24" />
                                 <Border BorderThickness="10" BorderBrush="#0C0926" Background="#0C0926" CornerRadius="5">
-                                    <TextBox Name="URLTextBox" Background="Transparent" Foreground="#281D7D" Text="" BorderThickness="0" TextAlignment="Left" FontSize="18"/>
+                                    <DockPanel>
+                                        <TextBox Name="URLTextBox" Background="Transparent" Foreground="#281D7D" Text="" BorderThickness="0" TextAlignment="Left" FontSize="18" Width="480"/>
+                                        <Button Name="AddDownloadTextFile" Margin="18 3 0 3">
+                                            <iconPacks:PackIconMaterial Kind="Folder" Width="18" Height="18" />
+                                        </Button>
+                                    </DockPanel>
                                 </Border>
                             </StackPanel>
                         </Viewbox>
-                        <Border BorderThickness="10" BorderBrush="#0C0926" Background="#0C0926" CornerRadius="5" HorizontalAlignment="Center" Padding="25 0" Margin="0 0 0 25" >
-                            <Button Name="AddDownloadBtn" HorizontalAlignment="Left" BorderThickness="0">
+                        <Button Name="AddDownloadBtn" BorderThickness="0" HorizontalAlignment="Center" Padding="25 0" Margin="0 0 0 25">
+                            <Border BorderThickness="10" BorderBrush="#0C0926" Background="#0C0926" CornerRadius="5"  >
                                 <DockPanel>
                                     <TextBlock Text="Add Download" Margin="0" HorizontalAlignment="Stretch" TextAlignment="Left" FontSize="18"/>
                                 </DockPanel>
-                            </Button>
-                        </Border>
+                            </Border>
+                        </Button>
 
                     </StackPanel>
                 </StackPanel>

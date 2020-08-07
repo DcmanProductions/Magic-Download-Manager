@@ -17,7 +17,7 @@ namespace com.drewchaseproject.MDM.WPF.Pages
             InitializeComponent();
             if (Values.Singleton.Activated)
             {
-                LoadPages(new AccountSettingsSection(), new DownloadSettingsSection(), new CacheSettingsSection());
+                LoadPages(new AccountSettingsSection(), new DownloadSettingsSection(), new CacheSettingsSection(), new ApplicationSettingsSection());
             }
             else
             {

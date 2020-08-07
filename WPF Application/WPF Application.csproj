@@ -7,7 +7,7 @@
     <ProjectGuid>{11AD4FF7-F2D8-4C58-A07B-386B9A816D98}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>com.drewchaseproject.MDM.WPF</RootNamespace>
-    <AssemblyName>Magic Download Manger</AssemblyName>
+    <AssemblyName>Magic Download Manager</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -159,8 +159,10 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -195,6 +197,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\Settings Sections\ApplicationSettingsSection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\Settings Sections\CacheSettingsSection.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -208,6 +214,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Template\DownloadTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\ViewChangelog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -273,6 +283,9 @@
     <Compile Include="Pages\Settings Sections\AccountSettingsSection.xaml.cs">
       <DependentUpon>AccountSettingsSection.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Settings Sections\ApplicationSettingsSection.xaml.cs">
+      <DependentUpon>ApplicationSettingsSection.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Settings Sections\CacheSettingsSection.xaml.cs">
       <DependentUpon>CacheSettingsSection.xaml</DependentUpon>
     </Compile>
@@ -284,6 +297,9 @@
     </Compile>
     <Compile Include="Pages\Template\DownloadTemplate.xaml.cs">
       <DependentUpon>DownloadTemplate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ViewChangelog.xaml.cs">
+      <DependentUpon>ViewChangelog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Welcome.xaml.cs">
       <DependentUpon>Welcome.xaml</DependentUpon>

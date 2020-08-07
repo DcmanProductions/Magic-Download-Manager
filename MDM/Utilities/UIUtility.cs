@@ -39,6 +39,65 @@ namespace com.drewchaseproject.MDM.Library.Utilities
         }
 
 
+        public static void RemoveDownloads(DownloadFile file)
+        {
+
+            if (Values.Singleton.DownloadQueue.Contains(file)) Values.Singleton.DownloadQueue.Remove(file);
+            else if (Values.Singleton.CompletedDownloads.Contains(file)) Values.Singleton.CompletedDownloads.Remove(file);
+            try
+            {
+
+                foreach (object element in Values.Singleton.DownloadViewer.Children)
+                {
+                    if (element.GetType().Equals(typeof(Frame)))
+                    {
+                        Frame frame = (Frame) element;
+                        if (frame.Name.Equals(file.ComponentName))
+                        {
+                            Values.Singleton.DownloadViewer.Children.Remove(frame);
+                        }
+                    }
+                }
+            }
+            catch (InvalidOperationException)
+            {
+
+            }
+            catch
+            {
+
+            }
+        }
+
+        public static void CompleteDownload(DownloadFile file)
+        {
+            if (Values.Singleton.DownloadQueue.Contains(file)) Values.Singleton.DownloadQueue.Remove(file);
+            if (Values.Singleton.DownloadQueue.Count > 0) Values.Singleton.DownloadPageTitle.Content = $"{Values.Singleton.DownloadQueue.Count} Remaining";
+            else Values.Singleton.DownloadPageTitle.Content = "Downloads";
+            try
+            {
+                foreach (object element in Values.Singleton.DownloadViewer.Children)
+                {
+                    if (element.GetType().Equals(typeof(Frame)))
+                    {
+                        Frame frame = (Frame) element;
+                        if (frame.Name.Equals(DataUtility.GetValidComponentName(file.FileName)))
+                        {
+                            Values.Singleton.DownloadViewer.Children.Remove(frame);
+                            Values.Singleton.DownloadViewer.Children.Add(frame);
+                        }
+                    }
+                }
+            }
+            catch (InvalidOperationException)
+            {
+
+            }
+            catch
+            {
+
+            }
+        }
 
         public static void SetCheckBox(Button button, bool value)
         {

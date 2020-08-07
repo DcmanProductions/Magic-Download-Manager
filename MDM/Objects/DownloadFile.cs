@@ -12,6 +12,18 @@ namespace com.drewchaseproject.MDM.Library.Objects
     public class DownloadFile
     {
         public string URL { get; set; }
+
+        string cpn = "";
+        public string ComponentName
+        {
+            get
+            {
+                if (cpn == "")
+                    cpn = $"{DataUtility.GetValidComponentName(FileName)}_{new Random().Next()}";
+                return cpn;
+            }
+        }
+
         public string FileName
         {
             get
@@ -40,7 +52,7 @@ namespace com.drewchaseproject.MDM.Library.Objects
 
         public string DownloadLocation { get; set; }
 
-        private int split;
+        private int split = Values.Singleton.FileSplitCount;
         public int MaxSplitSize
         {
             get
@@ -66,7 +78,7 @@ namespace com.drewchaseproject.MDM.Library.Objects
             }
         }
 
-        private int proxys;
+        private int proxys = Values.Singleton.ConnectionsPerProxy;
         public int Proxys
         {
             get
@@ -116,6 +128,11 @@ namespace com.drewchaseproject.MDM.Library.Objects
                     Values.Singleton.CurrentFileDownloading = this;
                     Values.Singleton.DirectDownloadURI = URL;
                     LoadProcess();
+                }
+                else
+                {
+                    if (DownloadFileProcess != null && !DownloadFileProcess.HasExited)
+                        DownloadFileProcess.Kill();
                 }
                 _isdownloading = value;
             }

@@ -10,19 +10,25 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="100*" />
-            <RowDefinition Height="287*" />
+            <RowDefinition Height="200" />
+            <RowDefinition />
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Grid.RowSpan="1">
-            <Viewbox>
+        <Grid Grid.Row="0" Grid.RowSpan="1" Margin="0,-30,0,0" Height="180" VerticalAlignment="Top" Background="Transparent" >
+            <Viewbox VerticalAlignment="Top">
                 <DockPanel>
-                    <Button Name="PlayDownloadBtn" Width="25" Background="Transparent" BorderThickness="0">
-                        <iconPacks:PackIconMaterial Kind="Play" />
+                    <Button Name="PlayDownloadBtn" Width="auto" Height="auto" Margin="5 0" Background="Transparent" BorderThickness="0">
+                        <iconPacks:PackIconMaterial Kind="Play" Width="10" Height="10"/>
                     </Button>
-                    <Label Content="Downloads" HorizontalContentAlignment="Center" />
-                    <Button Name="AddDownloadBtn" Width="25" Background="Transparent" BorderThickness="0">
-                        <iconPacks:PackIconMaterial Kind="Plus" />
+                    <Button Name="StopDownloadBtn" Width="auto" Height="auto" Margin="5 0" Background="Transparent" BorderThickness="0">
+                        <iconPacks:PackIconMaterial Kind="Stop" Width="10" Height="10"/>
+                    </Button>
+                    <Label Name="PageTitle" Content="Downloads" HorizontalContentAlignment="Center" />
+                    <Button Name="AddDownloadBtn" Width="auto" Height="auto" Margin="5 0" Background="Transparent" BorderThickness="0">
+                        <iconPacks:PackIconMaterial Kind="Plus" Width="10" Height="10"/>
+                    </Button>
+                    <Button Name="ClearDownloadBtn" Width="auto" Height="auto" Margin="5 0" Background="Transparent" BorderThickness="0">
+                        <iconPacks:PackIconMaterial Kind="NotificationClearAll" Width="10" Height="10" />
                     </Button>
                 </DockPanel>
             </Viewbox>

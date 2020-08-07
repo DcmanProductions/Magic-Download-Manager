@@ -1,10 +1,13 @@
-﻿using System;
+﻿using ChaseLabs.CLLogger.Events;
+using System;
 using System.Net;
 
 namespace com.drewchaseproject.MDM.Library.Data.DB
 {
     public class Activation
     {
+        private static readonly ChaseLabs.CLLogger.LogManger log = ChaseLabs.CLLogger.LogManger.Init().SetLogDirectory(Values.Singleton.LogFileLocation).EnableDefaultConsoleLogging().SetMinLogType(ChaseLabs.CLLogger.Lists.LogTypes.All);
+
 
         public static bool IsAuthorizedUser(string username, string password)
         {
@@ -15,11 +18,11 @@ namespace com.drewchaseproject.MDM.Library.Data.DB
 
             try
             {
-                string url = $"https://auth.drewchaseproject.com/mdm.php?username={username}&password={password}";
+                string url = $"https://auth.getmagicdm.tk/check.php?username={username}&password={password}";
                 using (WebClient client = new WebClient())
                 {
                     string text = client.DownloadString(url);
-                    Console.WriteLine(text);
+                    log.Info(text);
                     if (text.ToLower().Equals("NOT AUTHORIZED".ToLower()) || text.ToLower().Equals("Either The Username or Password Were not valid".ToLower()))
                     {
                         return false;

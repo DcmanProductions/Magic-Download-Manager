@@ -1,5 +1,7 @@
 ﻿using com.drewchaseproject.MDM.Library.Data;
 using com.drewchaseproject.MDM.Library.Data.DB;
+using System.Diagnostics;
+using System.IO;
 using System.Windows.Controls;
 
 namespace com.drewchaseproject.MDM.WPF.Pages.Settings_Sections
@@ -33,6 +35,14 @@ namespace com.drewchaseproject.MDM.WPF.Pages.Settings_Sections
 
         private void RegisterEvents()
         {
+            openAccountURL.Click += (s, e) => new Process() { StartInfo = new ProcessStartInfo() { FileName = "https://getmagicdm.tk/index.html#header15-s" } }.Start();
+            openForumURL.Click += (s, e) => new Process() { StartInfo = new ProcessStartInfo() { FileName = "https://forum.getmagicdm.tk/" } }.Start();
+            LogoutButton.Click += (s, e) =>
+            {
+                MainWindow.Singleton.Logout();
+                if (File.Exists(Values.Singleton.UserCacheFile)) File.Delete(Values.Singleton.UserCacheFile);
+                MainWindow.Singleton.CheckAuth();
+            };
             ActivateAccountButton.Click += (s, e) =>
             {
                 bool act = Activation.IsAuthorizedUser(EmailTxtBx.Text, PasswdTxtBx.Password);

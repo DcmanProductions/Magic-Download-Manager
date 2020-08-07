@@ -12,5 +12,16 @@ namespace com.drewchaseproject.MDM.Library.Utilities
         {
             return new string(input.Where(c => char.IsDigit(c)).ToArray());
         }
+
+        public static string GetValidComponentName(string input)
+        {
+            string output = input;
+            char[] illegal = " ~`!@#$%^&*()_+1234567890-={}[]\\|';:\"?></.,".ToCharArray();
+            foreach (var v in illegal)
+            {
+                output = output.Replace(v + "", "");
+            }
+            return output;
+        }
     }
 }

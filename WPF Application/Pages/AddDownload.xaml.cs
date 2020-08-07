@@ -20,7 +20,6 @@ namespace com.drewchaseproject.MDM.WPF.Pages
             InitializeComponent();
             Setup();
             RegisterEvents();
-            //Update();
         }
 
         private void Setup()
@@ -109,10 +108,17 @@ namespace com.drewchaseproject.MDM.WPF.Pages
             AddDownloadBtn.Click += (s, e) =>
             {
                 Added = true;
-                //UIUtility.GenerateDownloadUI(Downloads.Singleton.DownloadViewer, GetDownloadFile);
-                Values.Singleton.DownloadQueue.Add(GetDownloadFile);
-                Downloads.Singleton.LoadDownloads();
+                if (FileUtilities.IsSingleFile(URLTextBox.Text))
+                    Downloads.Singleton.AddDownload(FileUtilities.ImportDownloads(URLTextBox.Text).ToArray());
+                else if (NetworkUtility.IsValidDownloadUrl(URLTextBox.Text))
+                    Downloads.Singleton.AddDownload(GetDownloadFile);
                 MainWindow.Singleton.Main.Content = Downloads.Singleton;
+            };
+
+            AddDownloadTextFile.Click += (s, e) =>
+            {
+                URLTextBox.Text = FileUtilities.OpenFile(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Select Download File URL");
+                CheckValidDownload();
             };
 
         }
@@ -120,7 +126,7 @@ namespace com.drewchaseproject.MDM.WPF.Pages
         private void Update()
         {
             Dispatcher dis = Values.Singleton.MainDispatcher;
-            double seconds = 1;
+            double seconds = 2;
             long currentTime = DateTime.Now.Ticks, neededTime = 0;
             neededTime = DateTime.Now.AddSeconds(seconds).Ticks;
             Task.Run(() =>
@@ -143,7 +149,7 @@ namespace com.drewchaseproject.MDM.WPF.Pages
         private void CheckValidDownload()
         {
 
-            if (!string.IsNullOrEmpty(URLTextBox.Text) && NetworkUtility.IsValidDownloadUrl(URLTextBox.Text) && ( UIUtility.GetCheckBox(UseGlobalCheckBtn) || FileUtilities.IsValidPath(DownloadLocationTextBlock.Text) ))
+            if (!string.IsNullOrEmpty(URLTextBox.Text) && ( NetworkUtility.IsValidDownloadUrl(URLTextBox.Text) || FileUtilities.IsSingleFile(URLTextBox.Text) ) && ( UIUtility.GetCheckBox(UseGlobalCheckBtn) || FileUtilities.IsValidPath(DownloadLocationTextBlock.Text) ))
             {
                 AddDownloadBtn.Visibility = Visibility.Visible;
             }

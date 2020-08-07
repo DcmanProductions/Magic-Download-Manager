@@ -1,5 +1,6 @@
 ﻿using com.drewchaseproject.MDM.Library.Data;
 using com.drewchaseproject.MDM.Library.Objects;
+using com.drewchaseproject.MDM.Library.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,8 @@ namespace com.drewchaseproject.MDM.WPF.Pages.Template
     /// </summary>
     public partial class DownloadTemplate : Page
     {
-        private DownloadFile downloadFile;
+        public DownloadFile downloadFile;
+
         public DownloadTemplate(DownloadFile file)
         {
             InitializeComponent();
@@ -39,15 +41,15 @@ namespace com.drewchaseproject.MDM.WPF.Pages.Template
 
             RemoveBtn.Click += (s, e) =>
             {
-                Values.Singleton.DownloadQueue.Remove(downloadFile);
-                Downloads.Singleton.LoadDownloads();
-                if (!file.DownloadFileProcess.HasExited)
-                    file.DownloadFileProcess.Kill();
-
-                if (Values.Singleton.DownloadQueue.Count > 0)
-                    Values.Singleton.DownloadQueue[0].IsDownloading = true;
-                else
-                    Values.Singleton.CurrentFileDownloading = null;
+                UIUtility.RemoveDownloads(file);
+                if (file.DownloadFileProcess != null)
+                    if (!file.DownloadFileProcess.HasExited)
+                        file.DownloadFileProcess.Kill();
+                if (Values.Singleton.CurrentFileDownloading != null)
+                    if (Values.Singleton.DownloadQueue.Count > 0)
+                        Values.Singleton.DownloadQueue[0].IsDownloading = true;
+                    else
+                        Values.Singleton.CurrentFileDownloading = null;
             };
 
         }

@@ -1,7 +1,11 @@
-﻿using com.drewchaseproject.MDM.Library.Objects;
+﻿using ChaseLabs.CLConfiguration.List;
+using ChaseLabs.CLUpdate;
+using com.drewchaseproject.MDM.Library.Objects;
+using com.drewchaseproject.MDM.Library.Utilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Windows.Controls;
 using System.Windows.Threading;
 
@@ -14,17 +18,59 @@ namespace com.drewchaseproject.MDM.Library.Data
 
         public bool Activated { get; set; }
 
-        public string Username { get => Configuration.Singleton.manager.GetConfigByKey("Username").Value; set => Configuration.Singleton.manager.GetConfigByKey("Username").Value = value; }
-        public string Password { get => Configuration.Singleton.manager.GetConfigByKey("Password").Value; set => Configuration.Singleton.manager.GetConfigByKey("Password").Value = value; }
+        public string Username { get => Crypto.DecryptStringAES(Configuration.Singleton.userauth.GetConfigByKey("Username").Value, Environment.MachineName); set => Configuration.Singleton.userauth.GetConfigByKey("Username").Value = Crypto.EncryptStringAES(value, Environment.MachineName); }
+        public string Password { get => Crypto.DecryptStringAES(Configuration.Singleton.userauth.GetConfigByKey("Password").Value, Environment.MachineName); set => Configuration.Singleton.userauth.GetConfigByKey("Password").Value = Crypto.EncryptStringAES(value, Environment.MachineName); }
 
-        public StackPanel DownloadView { get; set; }
+        public bool UpdateAvailable
+        {
+            get
+            {
+                UpdateManager.Singleton.Init(VersionURL, LocalVersionFile);
+                Updater.Init(UpdateManager.Singleton.GetArchiveURL(Values.Singleton.Application_URL_Key), Path.Combine(Values.Singleton.TempDirectory, "Update"), ApplicationDirectory, Path.Combine(ApplicationDirectory, UpdateManager.Singleton.GetExecutableName(Values.Singleton.Application_Executable_Key)), true);
+                return UpdateManager.Singleton.CheckForUpdate(Values.Singleton.Application_App_Key, LocalVersionFile, VersionURL);
+            }
+        }
 
-        public DownloadFile CurrentFileDownloading { get; set; }
+        public string ChangeLog
+        {
+            get
+            {
+                using (var reader = new StreamReader(Path.Combine(Values.Singleton.ConfigDirectory, "CHANGELOG")))
+                {
+                    return reader.ReadToEnd();
+                }
+            }
+        }
+
+        public Button PlayDownloadBtn { get; set; }
+
+        DownloadFile _currentFileDownloading { get; set; }
+        public DownloadFile CurrentFileDownloading
+        {
+            get
+            {
+                return _currentFileDownloading;
+            }
+            set
+            {
+                if (value == null) PlayDownloadBtn.IsEnabled = true;
+                else PlayDownloadBtn.IsEnabled = false;
+                _currentFileDownloading = value;
+            }
+        }
 
         public Dispatcher MainDispatcher { get; set; }
 
         private List<DownloadFile> _queue;
-        public List<DownloadFile> DownloadQueue { get { if (_queue == null) { _queue = new List<DownloadFile>(); } return _queue; } set => _queue = value; }
+        public List<DownloadFile> DownloadQueue
+        {
+            get
+            {
+                if (_queue == null) _queue = new List<DownloadFile>();
+                return _queue;
+            }
+            set => _queue = value;
+        }
 
         private List<DownloadFile> _doneQueue;
         public List<DownloadFile> CompletedDownloads { get { if (_doneQueue == null) { _doneQueue = new List<DownloadFile>(); } return _doneQueue; } set => _doneQueue = value; }
@@ -133,6 +179,36 @@ namespace com.drewchaseproject.MDM.Library.Data
                 return path;
             }
         }
+        public string CacheDirectory
+        {
+            get
+            {
+                string path = Path.Combine(ApplicationRoot, "Cache");
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                return path;
+            }
+        }
+        public string DownloadCache
+        {
+            get
+            {
+                string path = Path.Combine(CacheDirectory, "leftovers");
+                return path;
+            }
+        }
+        public string HotSwapDownloadCache
+        {
+            get
+            {
+                string path = Path.Combine(CacheDirectory, "hotswap");
+                return path;
+            }
+        }
+
         public string LocalVersionFile
         {
             get
@@ -142,7 +218,7 @@ namespace com.drewchaseproject.MDM.Library.Data
             }
         }
 
-        public string VersionURL => @"https://dl.drewchaseproject.com/MDM/Version";
+        public string VersionURL => @"https://dl.getmagicdm.tk/Version";
 
         public string ConfigFile
         {
@@ -152,11 +228,41 @@ namespace com.drewchaseproject.MDM.Library.Data
                 return path;
             }
         }
+        
+        public string UserCacheFile
+        {
+            get
+            {
+                string path = Path.Combine(CacheDirectory, "usercache");
+                return path;
+            }
+        }
         public string LogFileLocation
         {
             get
             {
                 string path = Path.Combine(LogLocation, "latest.log");
+                return path;
+            }
+        }
+
+        public Assembly CurrentlyExecutingApplicationAssembly { get; set; }
+
+        public string GetIconPath
+        {
+            get
+            {
+                string path = Path.Combine(Directory.GetParent(CurrentlyExecutingApplicationAssembly.Location).FullName, "Icon.ico");
+                if (!File.Exists(path))
+                {
+                    var icon = System.Drawing.Icon.ExtractAssociatedIcon(CurrentlyExecutingApplicationAssembly.Location);
+                    using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                        icon.Save(stream);
+                        stream.Flush();
+                        stream.Close();
+                    }
+                }
                 return path;
             }
         }
@@ -203,6 +309,41 @@ namespace com.drewchaseproject.MDM.Library.Data
         }
 
         public TextBlock ConsoleLogBlock { get; set; }
+        public StackPanel DownloadViewer { get; set; }
+        public Label DownloadPageTitle { get; set; }
+
+
+        public string Launcher_URL_Key => "LAUNCHER_URL";
+        public string Launcher_Executable_Key => "LAUNCHER_EXE";
+        public string Launcher_App_Key => "LAUNCHER";
+
+
+        public string Application_URL_Key => "URL";
+        public string Application_Executable_Key => "EXE";
+        public string Application_App_Key => "Application";
+
+        public bool MinimizeOnStart { get { return Configuration.Singleton.manager.GetConfigByKey("Minimize ON Start").ParseBoolean(); } set { Configuration.Singleton.manager.GetConfigByKey("Minimize ON Start").Value = value + ""; } }
+        public bool MaximizeOnDownload { get { return Configuration.Singleton.manager.GetConfigByKey("Maximize on Download Start").ParseBoolean(); } set { Configuration.Singleton.manager.GetConfigByKey("Maximize on Download Start").Value = value + ""; } }
+        public bool StartWithWindows
+        {
+            get
+            {
+                return Configuration.Singleton.manager.GetConfigByKey("StartWithWindows").ParseBoolean();
+            }
+            set
+            {
+                Configuration.Singleton.manager.GetConfigByKey("StartWithWindows").Value = value + "";
+                if (value)
+                    RegistryUtility.AddToStartup();
+                else
+                    RegistryUtility.RemoveFromStartup();
+            }
+        }
+        public string LauncherExe { get { return Configuration.Singleton.manager.GetConfigByKey("Launcher Directory").Value; } set { Configuration.Singleton.manager.GetConfigByKey("Launcher Directory").Value = value; } }
+        public string LauncherInstallDirectory => Directory.GetParent(LauncherExe).FullName;
+
+        public string ApplicationVersion => new ConfigManager(LocalVersionFile).GetConfigByKey(Application_App_Key).Value;
+        public string LauncherVersion => new ConfigManager(LocalVersionFile).GetConfigByKey(Launcher_App_Key).Value;
 
     }
 }

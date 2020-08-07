@@ -1,5 +1,6 @@
 ﻿using com.drewchaseproject.MDM.Library.Data;
 using com.drewchaseproject.MDM.Library.Data.DB;
+using System.Diagnostics;
 using System.Windows.Controls;
 
 namespace Launcher
@@ -23,6 +24,8 @@ namespace Launcher
 
         private void RegisterEvents()
         {
+            openAccountURL.Click += (s, e) => new Process() { StartInfo = new ProcessStartInfo() { FileName = "https://getmagicdm.tk/index.html#header15-s" } }.Start();
+
             ActivateAccountButton.Click += (s, e) =>
             {
                 bool act = Activation.IsAuthorizedUser(EmailTxtBx.Text, PasswdTxtBx.Password);

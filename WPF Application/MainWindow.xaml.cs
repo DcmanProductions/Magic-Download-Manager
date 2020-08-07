@@ -3,12 +3,20 @@ using com.drewchaseproject.MDM.Library.Data.DB;
 using com.drewchaseproject.MDM.Library.Utilities;
 using com.drewchaseproject.MDM.WPF.Pages;
 using System;
+using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Web.UI.WebControls;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Interop;
+
+using Application = System.Windows.Application;
+using Timer = System.Threading.Timer;
 
 namespace com.drewchaseproject.MDM.WPF
 {
@@ -24,14 +32,13 @@ namespace com.drewchaseproject.MDM.WPF
         public MainWindow()
         {
             InitializeComponent();
+
             _singleton = this;
             Setup();
             RegisterEvents();
-
             CheckAuth();
-
+            //Task.Run(() => AutoCheckForUpdates());
         }
-
         public enum PageType
         {
             Welcome,
@@ -43,8 +50,8 @@ namespace com.drewchaseproject.MDM.WPF
 
         private void Setup()
         {
-            MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight-9;
-            MaxWidth = SystemParameters.MaximizedPrimaryScreenWidth-9;
+            MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight - 9;
+            MaxWidth = SystemParameters.MaximizedPrimaryScreenWidth - 9;
             Values.Singleton.MainDispatcher = Application.Current.Dispatcher;
             if (File.Exists(Values.Singleton.LogFileLocation))
             {
@@ -52,17 +59,21 @@ namespace com.drewchaseproject.MDM.WPF
             }
 
             ChangeView(PageType.Welcome);
+            Values.Singleton.DownloadQueue.AddRange(FileUtilities.ImportDownloads());
             _ = Configuration.Singleton;
+            _ = Downloads.Singleton;
+
+            Values.Singleton.CurrentlyExecutingApplicationAssembly = Assembly.GetExecutingAssembly();
+            Values.Singleton.StartWithWindows = RegistryUtility.IsAddedToStartup;
+            if (!RegistryUtility.IsUrlProtocolAdded)
+            {
+                RegistryUtility.AddUrlProtocol();
+            }
         }
 
         private void RegisterEvents()
         {
-            //SourceInitialized += (s, e) =>
-            //{
-            //    IntPtr handle = ( new WindowInteropHelper(this) ).Handle;
-            //    HwndSource.FromHwnd(handle).AddHook(new HwndSourceHook(UIUtility.WindowProc));
-            //};
-
+            SystemTray();
             MouseDown += (s, e) =>
             {
                 if (e.LeftButton == MouseButtonState.Pressed && e.RightButton == MouseButtonState.Released)
@@ -87,10 +98,9 @@ namespace com.drewchaseproject.MDM.WPF
 
 
             AppDomain.CurrentDomain.ProcessExit += ( (object sender, EventArgs e) => OnExit() );
-
         }
 
-        private void CheckAuth()
+        public void CheckAuth()
         {
             if (!Activation.IsAuthorizedUser(Values.Singleton.Username, Values.Singleton.Password))
             {
@@ -104,6 +114,13 @@ namespace com.drewchaseproject.MDM.WPF
             }
         }
 
+        public void Logout()
+        {
+            Values.Singleton.Activated = false;
+            MenuBar.Visibility = Visibility.Collapsed;
+            ChangeView(PageType.Settings);
+        }
+
         private void PreClose()
         {
             OnExit();
@@ -112,6 +129,8 @@ namespace com.drewchaseproject.MDM.WPF
 
         private void OnExit()
         {
+            if (NotifyIcon != null) NotifyIcon.Visible = false;
+
             FastDownloadExecutableUtility.DestroyExecutable();
             try
             {
@@ -119,6 +138,9 @@ namespace com.drewchaseproject.MDM.WPF
                     Values.Singleton.CurrentFileDownloading.DownloadFileProcess.Kill();
             }
             catch { }
+
+            FileUtilities.ExportDownloads();
+
         }
 
         public void ChangeView(PageType page)
@@ -143,6 +165,90 @@ namespace com.drewchaseproject.MDM.WPF
             }
         }
 
+        void DelayedSetup()
+        {
+            long current = DateTime.Now.Ticks, wanted = DateTime.Now.AddSeconds(2).Ticks;
+            while (current < wanted)
+            {
+                current = DateTime.Now.Ticks;
+            }
+            if (Values.Singleton.MinimizeOnStart)
+            {
+                WindowState = WindowState.Minimized;
+                ShowInTaskbar = false;
+                NotifyIcon.BalloonTipTitle = "SUckme day";
+                NotifyIcon.BalloonTipText = "Right Click to See more options";
+                NotifyIcon.ShowBalloonTip(400);
+                NotifyIcon.Visible = true;
+            }
+        }
+
+        private System.Windows.Forms.ContextMenuStrip contextMenu;
+        public System.Windows.Forms.NotifyIcon NotifyIcon;
+        private void SystemTray()
+        {
+            NotifyIcon = new System.Windows.Forms.NotifyIcon
+            {
+                Icon = System.Drawing.Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location)
+            };
+            NotifyIcon.Visible = true;
+            StateChanged += (s, e) =>
+           {
+               if (WindowState == WindowState.Minimized)
+               {
+                   ShowInTaskbar = false;
+                   NotifyIcon.BalloonTipTitle = "Minimized Magic DM";
+                   NotifyIcon.BalloonTipText = "Right Click to See more options";
+                   NotifyIcon.ShowBalloonTip(400);
+                   NotifyIcon.Visible = true;
+               }
+               else if (WindowState == WindowState.Normal)
+               {
+                   NotifyIcon.Visible = true;
+                   ShowInTaskbar = true;
+                   Activate();
+               }
+           };
+
+            contextMenu = new System.Windows.Forms.ContextMenuStrip();
+            contextMenu.Items.Add("Show", null, new EventHandler((object sender, EventArgs args) => { WindowState = WindowState.Normal; }));
+            //contextMenu.Items.Add("Check For Updates", null, new EventHandler((object sender, EventArgs args) => { CheckForUpdates(); }));
+            contextMenu.Items.Add("Exit", null, new EventHandler((object sender, EventArgs args) => { PreClose(); }));
+            NotifyIcon.ContextMenuStrip = contextMenu;
+        }
+
+        void CheckForUpdates()
+        {
+            if (Values.Singleton.UpdateAvailable)
+            {
+                contextMenu.Items.Add("Update Available", null, new EventHandler((object sender, EventArgs args) =>
+                {
+                    new Process() { StartInfo = new ProcessStartInfo() { FileName = Values.Singleton.LauncherExe } }.Start();
+                    PreClose();
+                }));
+            }
+        }
+
+        void AutoCheckForUpdates()
+        {
+            int seconds = 5;
+            int minutes = 20;
+            long current = DateTime.Now.Ticks, wanted = DateTime.Now.AddMinutes(minutes).Ticks, test = DateTime.Now.AddSeconds(seconds).Ticks;
+            while (current < wanted)
+            {
+                current = DateTime.Now.Ticks;
+                //if (current >= wanted)
+                //{
+                //    wanted = DateTime.Now.AddMinutes(minutes).Ticks;
+                //    CheckForUpdates();
+                //}
+                if (current >= test)
+                {
+                    test = DateTime.Now.AddSeconds(test).Ticks;
+                    CheckForUpdates();
+                }
+            }
+        }
 
     }
 }

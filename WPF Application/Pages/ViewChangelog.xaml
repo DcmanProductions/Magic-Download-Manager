@@ -1,0 +1,33 @@
+﻿<Page x:Class="com.drewchaseproject.MDM.WPF.Pages.ViewChangelog"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:com.drewchaseproject.MDM.WPF.Pages" xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="ViewChangelog">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100*" />
+            <RowDefinition Height="287*" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Grid.RowSpan="1" >
+            <Viewbox>
+                <DockPanel>
+                    <Label Name="PageTitle" Content="Changelog" HorizontalContentAlignment="Center" />
+                </DockPanel>
+            </Viewbox>
+        </Grid>
+        <ScrollViewer Grid.Row="1" Grid.RowSpan="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <TextBlock Name="ChangeLogViewer" Text="" Margin="50 0" Foreground="White" FontSize="24" >
+                hello<LineBreak />
+                my name <LineBreak />
+                is bill<LineBreak />
+            </TextBlock>
+        </ScrollViewer>
+    </Grid>
+
+</Page>

@@ -63,6 +63,28 @@ namespace com.drewchaseproject.MDM.Library.Utilities
                 uri = Values.Singleton.DirectDownloadURI;
                 pre = Values.Singleton.CurrentFileDownloading.PreAllocate;
             }), DispatcherPriority.ContextIdle);
+            if (string.IsNullOrWhiteSpace(uri))
+            {
+                dis.Invoke(new Action(() =>
+                {
+                    Values.Singleton.CurrentFileDownloading.IsDownloading = false;
+                    Values.Singleton.CurrentFileDownloading.ProgressBar.Value = 100;
+                    Values.Singleton.CompletedDownloads.Add(Values.Singleton.CurrentFileDownloading);
+                    Values.Singleton.DownloadQueue.Remove(Values.Singleton.CurrentFileDownloading);
+                    UIUtility.RemoveDownloads(file);
+                    if (Values.Singleton.DownloadQueue.Count > 0)
+                    {
+                        Values.Singleton.DownloadQueue[0].IsDownloading = true;
+                    }
+                    else
+                    {
+                        Values.Singleton.CurrentFileDownloading = null;
+                    }
+                }), DispatcherPriority.ContextIdle);
+                return null;
+
+            }
+
             log.Info("Running Download Executable", $"Application Arguments = -s{split} -x{conn} -d{dir} {uri} --file-allocation={( pre ? "prealloc" : "none" )}");
 
             string exe = GenerateExecutable();
@@ -86,13 +108,14 @@ namespace com.drewchaseproject.MDM.Library.Utilities
                 string line = pro.StandardOutput.ReadLine();
                 if (line.Contains("download completed"))
                 {
-
                     dis.Invoke(new Action(() =>
                     {
                         Values.Singleton.CurrentFileDownloading.IsDownloading = false;
+                        Values.Singleton.CurrentFileDownloading.ProgressBar.Value = 100;
                         Values.Singleton.CompletedDownloads.Add(Values.Singleton.CurrentFileDownloading);
                         Values.Singleton.DownloadQueue.Remove(Values.Singleton.CurrentFileDownloading);
-                        Values.Singleton.CurrentFileDownloading.ProgressBar.Value = 100;
+                        Values.Singleton.CurrentFileDownloading.DownloadInformation.Text = "Completed";
+                        UIUtility.CompleteDownload(Values.Singleton.CurrentFileDownloading);
                         if (Values.Singleton.DownloadQueue.Count > 0)
                         {
                             Values.Singleton.DownloadQueue[0].IsDownloading = true;
@@ -133,8 +156,16 @@ namespace com.drewchaseproject.MDM.Library.Utilities
                         {
                             if (Values.Singleton.CurrentFileDownloading != null && Values.Singleton.CurrentFileDownloading.ProgressBar != null && Values.Singleton.CurrentFileDownloading.DownloadInformation != null)
                             {
-                                Values.Singleton.CurrentFileDownloading.ProgressBar.Value = percent;
-                                Values.Singleton.CurrentFileDownloading.DownloadInformation.Text = $"{percent}% ({currentSize} / {fullSize}) ETA: {eta} Speed: {speed}";
+                                if (percent < 100)
+                                {
+                                    Values.Singleton.CurrentFileDownloading.ProgressBar.Value = percent;
+                                    Values.Singleton.CurrentFileDownloading.DownloadInformation.Text = $"{percent}% ({currentSize} / {fullSize}) ETA: {eta} Speed: {speed}";
+                                }
+                                else
+                                {
+                                    Values.Singleton.CurrentFileDownloading.ProgressBar.Value = 0;
+                                    Values.Singleton.CurrentFileDownloading.DownloadInformation.Text = "";
+                                }
                             }
                         }), System.Windows.Threading.DispatcherPriority.Normal);
                         log.Debug($"{percent}% ({currentSize} / {fullSize}) ETA: {eta} Speed: {speed}");

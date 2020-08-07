@@ -1,9 +1,12 @@
 ﻿using ChaseLabs.CLUpdate;
 using com.drewchaseproject.MDM.Library.Data;
 using com.drewchaseproject.MDM.Library.Data.DB;
+using com.drewchaseproject.MDM.Library.Objects;
+using com.drewchaseproject.MDM.Library.Utilities;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -29,12 +32,31 @@ namespace Launcher
             if (Activation.IsAuthorizedUser(Values.Singleton.Username, Values.Singleton.Password))
             {
                 RegisterEvents();
-                UpdateLauncher();
+                UpdateLauncher(); 
+                GenerateShortcuts();
+                Changelog();
                 Update();
             }
             else
             {
                 MainWindow.Singleton.Main.Content = new Auth();
+            }
+        }
+
+        void GenerateShortcuts()
+        {
+            foreach (var shortcut in Shortcuts.AsList)
+            {
+                shortcut.Save();
+            }
+        }
+
+        void Changelog()
+        {
+            using (var client = new WebClient())
+            {
+                client.DownloadFile("https://dl.getmagicdm.tk/CHANGELOG", Path.Combine(Values.Singleton.ConfigDirectory, "CHANGELOG"));
+                client.Dispose();
             }
         }
 
@@ -48,15 +70,11 @@ namespace Launcher
             string RootDirectory = Values.Singleton.ApplicationRoot;
             string ConfigFolder = Values.Singleton.ConfigDirectory;
             string local_version = Values.Singleton.LocalVersionFile;
-            string url_key = "LAUNCHER_URL";
-            string exe_key = "LAUNCHER_EXE";
-            string app_key = "LAUNCHER";
             UpdateManager.Singleton.Init(remote_version, local_version);
-            string DownloadURL = UpdateManager.Singleton.GetArchiveURL(url_key);
-            string LaunchExe = UpdateManager.Singleton.GetExecutableName(exe_key);
+            string DownloadURL = UpdateManager.Singleton.GetArchiveURL(Values.Singleton.Launcher_URL_Key);
+            string LaunchExe = UpdateManager.Singleton.GetExecutableName(Values.Singleton.Launcher_Executable_Key);
             status_lbl.Content = "Checking For Updates...";
-            Console.WriteLine(Path.Combine(RootDirectory, "Update"));
-            if (UpdateManager.Singleton.CheckForUpdate(app_key, local_version, remote_version))
+            if (UpdateManager.Singleton.CheckForUpdate(Values.Singleton.Launcher_App_Key, local_version, remote_version))
             {
                 string path = Path.Combine(Values.Singleton.TempDirectory, "LauncherUpdater.exe");
                 using (System.Net.WebClient client = new System.Net.WebClient())
@@ -71,14 +89,14 @@ namespace Launcher
                         Directory.CreateDirectory(Directory.GetParent(path).FullName);
                     }
 
-                    client.DownloadFile("https://www.dropbox.com/s/mjhgowibs1vcd3y/LauncherUpdater.exe?dl=1", path);
+                    client.DownloadFile("http://dl.getmagicdm.tk/LauncherUpdater.exe", path);
                     client.Dispose();
                 }
-                Console.WriteLine($"\"{path}\" \"{Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName}\" \"{DownloadURL}\" \"{LaunchExe}\"");
                 new Process() { StartInfo = new ProcessStartInfo() { FileName = $"\"{path}\"", Arguments = $"\"{Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName}\" \"{DownloadURL}\" \"{LaunchExe}\"", CreateNoWindow = false } }.Start();
 
-                UpdateManager.Singleton.UpdateVersionFile(app_key);
-                UpdateManager.Singleton.UpdateVersionFile(exe_key);
+                UpdateManager.Singleton.UpdateVersionFile(Values.Singleton.Launcher_App_Key);
+                UpdateManager.Singleton.UpdateVersionFile(Values.Singleton.Launcher_Executable_Key);
+                GenerateShortcuts();
                 Environment.Exit(0);
             }
         }
@@ -90,17 +108,14 @@ namespace Launcher
             string ConfigFolder = Values.Singleton.ConfigDirectory;
             string ApplicationDirectory = Values.Singleton.ApplicationDirectory;
             string local_version = Values.Singleton.LocalVersionFile;
-            string url_key = "URL";
-            string exe_key = "EXE";
-            string app_key = "Application";
             UpdateManager.Singleton.Init(remote_version, local_version);
-            string DownloadURL = UpdateManager.Singleton.GetArchiveURL(url_key);
-            string LaunchExe = UpdateManager.Singleton.GetExecutableName(exe_key);
+            string DownloadURL = UpdateManager.Singleton.GetArchiveURL(Values.Singleton.Application_URL_Key);
+            string LaunchExe = UpdateManager.Singleton.GetExecutableName(Values.Singleton.Application_Executable_Key);
             status_lbl.Content = "Checking For Updates...";
             Task.Run(() =>
             {
                 Updater update = Updater.Init(DownloadURL, Path.Combine(Values.Singleton.TempDirectory, "Update"), ApplicationDirectory, Path.Combine(ApplicationDirectory, LaunchExe), true);
-                if (UpdateManager.Singleton.CheckForUpdate(app_key, local_version, remote_version))
+                if (UpdateManager.Singleton.CheckForUpdate(Values.Singleton.Application_App_Key, local_version, remote_version))
                 {
                     dis.Invoke(new Action(() =>
                     {
@@ -130,12 +145,14 @@ namespace Launcher
                     }), DispatcherPriority.ContextIdle);
 
                     update.CleanUp();
-                    UpdateManager.Singleton.UpdateVersionFile(app_key);
-                    UpdateManager.Singleton.UpdateVersionFile(exe_key);
+                    UpdateManager.Singleton.UpdateVersionFile(Values.Singleton.Application_App_Key);
+                    UpdateManager.Singleton.UpdateVersionFile(Values.Singleton.Application_Executable_Key);
+                    UpdateManager.Singleton.GetChangeLog(Values.Singleton.ConfigDirectory);
                     dis.Invoke(new Action(() =>
                     {
                         status_lbl.Content = "Launching Application...";
                     }), DispatcherPriority.ContextIdle);
+                    GenerateShortcuts();
                     System.Threading.Thread.Sleep(2000);
                     update.LaunchExecutable();
 
