@@ -332,10 +332,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MDM Proxy\MDM Proxy.csproj">
-      <Project>{d4b36332-d6b1-4d83-9f96-98d7a2a0b579}</Project>
-      <Name>MDM Proxy</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MDM\MDM.csproj">
       <Project>{f48687e2-e968-4781-99fa-aecc91d39b6a}</Project>
       <Name>MDM</Name>

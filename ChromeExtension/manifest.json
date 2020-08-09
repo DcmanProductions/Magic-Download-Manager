@@ -1,0 +1,21 @@
+{
+    "name": "Magic DM Extension",
+    "version": "1.0.0",
+    "background": {
+        "scripts": [
+            "background.js"
+        ]
+    },
+    "permissions": [
+        "downloads",
+        "activeTab"
+    ],
+    "manifest_version": 2,
+    "description": "Connects the Magic Download Manager to Chrome",
+    "icons":{
+        "128": "icon_128.png"
+    },
+    "browser_action": {
+        "default_icon": "icon.png"
+    }
+}
