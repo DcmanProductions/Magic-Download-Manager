@@ -1,11 +1,5 @@
 ﻿using IWshRuntimeLibrary;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using File = System.IO.File;
 
 namespace com.drewchaseproject.MDM.Library.Objects
@@ -18,12 +12,16 @@ namespace com.drewchaseproject.MDM.Library.Objects
         public string ShortcutName { get; private set; }
         public bool ForceCreate { get; private set; }
 
-        private IWshShortcut shortcut;
+        private readonly IWshShortcut shortcut;
 
         public ShortcutFile(string name, string outputFolder, string targetFileLocation, string shortcutDescription, bool force = true)
         {
             ForceCreate = force;
-            if (!Directory.Exists(outputFolder)) Directory.CreateDirectory(outputFolder);
+            if (!Directory.Exists(outputFolder))
+            {
+                Directory.CreateDirectory(outputFolder);
+            }
+
             ShortcutOutputDirectory = outputFolder;
             ShortcutName = name;
             ShortcutPath = Path.Combine(ShortcutOutputDirectory, ShortcutName + ".lnk");
@@ -40,7 +38,10 @@ namespace com.drewchaseproject.MDM.Library.Objects
             if (ForceCreate)
             {
                 if (File.Exists(ShortcutPath))
+                {
                     File.Delete(ShortcutPath);
+                }
+
                 shortcut.Save();
             }
             else

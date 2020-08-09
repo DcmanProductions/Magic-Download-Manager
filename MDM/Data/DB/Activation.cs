@@ -1,6 +1,4 @@
-﻿using ChaseLabs.CLLogger.Events;
-using System;
-using System.Net;
+﻿using System.Net;
 
 namespace com.drewchaseproject.MDM.Library.Data.DB
 {
@@ -18,7 +16,7 @@ namespace com.drewchaseproject.MDM.Library.Data.DB
 
             try
             {
-                string url = $"https://auth.getmagicdm.tk/check.php?username={username}&password={password}";
+                string url = $"https://auth.getmagicdm.com/check.php?username={username}&password={password}";
                 using (WebClient client = new WebClient())
                 {
                     string text = client.DownloadString(url);

@@ -35,12 +35,16 @@ namespace com.drewchaseproject.MDM.WPF.Pages.Settings_Sections
 
         private void RegisterEvents()
         {
-            openAccountURL.Click += (s, e) => new Process() { StartInfo = new ProcessStartInfo() { FileName = "https://getmagicdm.tk/index.html#header15-s" } }.Start();
-            openForumURL.Click += (s, e) => new Process() { StartInfo = new ProcessStartInfo() { FileName = "https://forum.getmagicdm.tk/" } }.Start();
+            openAccountURL.Click += (s, e) => new Process() { StartInfo = new ProcessStartInfo() { FileName = "https://getmagicdm.com/index.php#header15-s" } }.Start();
+            openForumURL.Click += (s, e) => new Process() { StartInfo = new ProcessStartInfo() { FileName = "https://forum.getmagicdm.com/" } }.Start();
             LogoutButton.Click += (s, e) =>
             {
                 MainWindow.Singleton.Logout();
-                if (File.Exists(Values.Singleton.UserCacheFile)) File.Delete(Values.Singleton.UserCacheFile);
+                if (File.Exists(Values.Singleton.UserCacheFile))
+                {
+                    File.Delete(Values.Singleton.UserCacheFile);
+                }
+
                 MainWindow.Singleton.CheckAuth();
             };
             ActivateAccountButton.Click += (s, e) =>

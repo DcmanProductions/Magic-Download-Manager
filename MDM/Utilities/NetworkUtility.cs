@@ -22,7 +22,10 @@ namespace com.drewchaseproject.MDM.Library.Utilities
 
                 s = s.Split('?')[0].Replace("?", "");
 
-                if (string.IsNullOrWhiteSpace(s)) return false;
+                if (string.IsNullOrWhiteSpace(s))
+                {
+                    return false;
+                }
 
                 using (WebResponse response = request.GetResponse())
                 {

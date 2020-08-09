@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 
 namespace com.drewchaseproject.MDM.Library.Utilities
 {
@@ -17,7 +13,7 @@ namespace com.drewchaseproject.MDM.Library.Utilities
         {
             string output = input;
             char[] illegal = " ~`!@#$%^&*()_+1234567890-={}[]\\|';:\"?></.,".ToCharArray();
-            foreach (var v in illegal)
+            foreach (char v in illegal)
             {
                 output = output.Replace(v + "", "");
             }

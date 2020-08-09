@@ -1,12 +1,9 @@
 ﻿using com.drewchaseproject.MDM.Library.Data;
 using com.drewchaseproject.MDM.Library.Objects;
-using com.drewchaseproject.MDM.Library.Utilities;
 using com.drewchaseproject.MDM.WPF.Pages.Template;
 using System;
 using System.IO;
-using System.IO.Ports;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -41,7 +38,7 @@ namespace com.drewchaseproject.MDM.WPF.Pages
             Update();
         }
 
-        void Setup()
+        private void Setup()
         {
             Values.Singleton.PlayDownloadBtn = PlayDownloadBtn;
             Values.Singleton.DownloadViewer = DownloadViewer;
@@ -63,7 +60,10 @@ namespace com.drewchaseproject.MDM.WPF.Pages
                 if (Values.Singleton.MaximizeOnDownload)
                 {
                     if (MainWindow.Singleton.WindowState == WindowState.Minimized)
+                    {
                         MainWindow.Singleton.WindowState = WindowState.Normal;
+                    }
+
                     MainWindow.Singleton.Activate();
                     MainWindow.Singleton.Main.Content = this;
                 }
@@ -117,9 +117,13 @@ namespace com.drewchaseproject.MDM.WPF.Pages
             PlayDownloadBtn.Click += (s, e) => PlayDownloadQueue();
         }
 
-        void PlayDownloadQueue()
+        private void PlayDownloadQueue()
         {
-            if (Values.Singleton.DownloadQueue.Count > 0) Values.Singleton.DownloadPageTitle.Content = $"{Values.Singleton.DownloadQueue.Count} Remaining";
+            if (Values.Singleton.DownloadQueue.Count > 0)
+            {
+                Values.Singleton.DownloadPageTitle.Content = $"{Values.Singleton.DownloadQueue.Count} Remaining";
+            }
+
             if (Values.Singleton.DownloadQueue.Count > 0)
             {
                 try
@@ -135,10 +139,13 @@ namespace com.drewchaseproject.MDM.WPF.Pages
             }
         }
 
-        void ClearDownloadQueue()
+        private void ClearDownloadQueue()
         {
             if (Values.Singleton.CurrentFileDownloading != null)
+            {
                 Values.Singleton.CurrentFileDownloading.IsDownloading = false;
+            }
+
             PlayDownloadBtn.IsEnabled = true;
             StopDownloadBtn.IsEnabled = false;
             Values.Singleton.DownloadQueue.Clear();
@@ -146,7 +153,7 @@ namespace com.drewchaseproject.MDM.WPF.Pages
             PageTitle.Content = "Downloads";
         }
 
-        void StopDownloadQueue()
+        private void StopDownloadQueue()
         {
             for (int i = 0; i < 3; i++)
             {
@@ -161,14 +168,17 @@ namespace com.drewchaseproject.MDM.WPF.Pages
             PageTitle.Content = "Downloads";
         }
 
-
-        void HotSwapDownloads()
+        private void HotSwapDownloads()
         {
-            if (!File.Exists(Values.Singleton.HotSwapDownloadCache)) return;
+            if (!File.Exists(Values.Singleton.HotSwapDownloadCache))
+            {
+                return;
+            }
+
             try
             {
 
-                using (var reader = new StreamReader(Values.Singleton.HotSwapDownloadCache))
+                using (StreamReader reader = new StreamReader(Values.Singleton.HotSwapDownloadCache))
                 {
                     while (!reader.EndOfStream)
                     {
@@ -178,8 +188,10 @@ namespace com.drewchaseproject.MDM.WPF.Pages
                     }
                 }
 
-                if (Values.Singleton.DownloadQueue.Count > 0 && !Values.Singleton.DownloadQueue[0].IsDownloading) PlayDownloadQueue();
-
+                if (Values.Singleton.DownloadQueue.Count > 0 && !Values.Singleton.DownloadQueue[0].IsDownloading)
+                {
+                    PlayDownloadQueue();
+                }
             }
             catch (Exception e)
             {

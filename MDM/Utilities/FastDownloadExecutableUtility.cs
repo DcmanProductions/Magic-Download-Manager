@@ -4,7 +4,6 @@ using com.drewchaseproject.MDM.Library.Properties;
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 
@@ -127,7 +126,9 @@ namespace com.drewchaseproject.MDM.Library.Utilities
                     }), DispatcherPriority.ContextIdle);
                 }
                 if (string.IsNullOrWhiteSpace(line))
+                {
                     continue;
+                }
 
                 string currentSize = "N/A", fullSize = "N/A", speed = "N/A", eta = "N/A";
                 double percent = 0;

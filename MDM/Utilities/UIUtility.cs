@@ -2,11 +2,10 @@
 using com.drewchaseproject.MDM.Library.Objects;
 using System;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Runtime.InteropServices;
 
 namespace com.drewchaseproject.MDM.Library.Utilities
 {
@@ -42,8 +41,15 @@ namespace com.drewchaseproject.MDM.Library.Utilities
         public static void RemoveDownloads(DownloadFile file)
         {
 
-            if (Values.Singleton.DownloadQueue.Contains(file)) Values.Singleton.DownloadQueue.Remove(file);
-            else if (Values.Singleton.CompletedDownloads.Contains(file)) Values.Singleton.CompletedDownloads.Remove(file);
+            if (Values.Singleton.DownloadQueue.Contains(file))
+            {
+                Values.Singleton.DownloadQueue.Remove(file);
+            }
+            else if (Values.Singleton.CompletedDownloads.Contains(file))
+            {
+                Values.Singleton.CompletedDownloads.Remove(file);
+            }
+
             try
             {
 
@@ -71,9 +77,20 @@ namespace com.drewchaseproject.MDM.Library.Utilities
 
         public static void CompleteDownload(DownloadFile file)
         {
-            if (Values.Singleton.DownloadQueue.Contains(file)) Values.Singleton.DownloadQueue.Remove(file);
-            if (Values.Singleton.DownloadQueue.Count > 0) Values.Singleton.DownloadPageTitle.Content = $"{Values.Singleton.DownloadQueue.Count} Remaining";
-            else Values.Singleton.DownloadPageTitle.Content = "Downloads";
+            if (Values.Singleton.DownloadQueue.Contains(file))
+            {
+                Values.Singleton.DownloadQueue.Remove(file);
+            }
+
+            if (Values.Singleton.DownloadQueue.Count > 0)
+            {
+                Values.Singleton.DownloadPageTitle.Content = $"{Values.Singleton.DownloadQueue.Count} Remaining";
+            }
+            else
+            {
+                Values.Singleton.DownloadPageTitle.Content = "Downloads";
+            }
+
             try
             {
                 foreach (object element in Values.Singleton.DownloadViewer.Children)

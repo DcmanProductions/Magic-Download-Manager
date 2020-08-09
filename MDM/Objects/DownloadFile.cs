@@ -2,10 +2,7 @@
 using com.drewchaseproject.MDM.Library.Utilities;
 using System;
 using System.Diagnostics;
-using System.Net;
 using System.Windows.Controls;
-using System.Net.Mime;
-using System.Windows;
 
 namespace com.drewchaseproject.MDM.Library.Objects
 {
@@ -13,13 +10,16 @@ namespace com.drewchaseproject.MDM.Library.Objects
     {
         public string URL { get; set; }
 
-        string cpn = "";
+        private string cpn = "";
         public string ComponentName
         {
             get
             {
                 if (cpn == "")
+                {
                     cpn = $"{DataUtility.GetValidComponentName(FileName)}_{new Random().Next()}";
+                }
+
                 return cpn;
             }
         }
@@ -132,7 +132,9 @@ namespace com.drewchaseproject.MDM.Library.Objects
                 else
                 {
                     if (DownloadFileProcess != null && !DownloadFileProcess.HasExited)
+                    {
                         DownloadFileProcess.Kill();
+                    }
                 }
                 _isdownloading = value;
             }

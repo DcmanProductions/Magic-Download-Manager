@@ -1,12 +1,8 @@
 ﻿using com.drewchaseproject.MDM.Library.Data;
 using com.drewchaseproject.MDM.Library.Objects;
-using IWshRuntimeLibrary;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
-using System.Security.Cryptography;
-using System.Windows.Documents;
 using System.Windows.Forms;
 using File = System.IO.File;
 
@@ -130,10 +126,14 @@ namespace com.drewchaseproject.MDM.Library.Utilities
 
         public static void ExportDownloads()
         {
-            if (File.Exists(Values.Singleton.DownloadCache)) File.Delete(Values.Singleton.DownloadCache);
-            using (var writer = new StreamWriter(Values.Singleton.DownloadCache))
+            if (File.Exists(Values.Singleton.DownloadCache))
             {
-                foreach (var file in Values.Singleton.DownloadQueue)
+                File.Delete(Values.Singleton.DownloadCache);
+            }
+
+            using (StreamWriter writer = new StreamWriter(Values.Singleton.DownloadCache))
+            {
+                foreach (DownloadFile file in Values.Singleton.DownloadQueue)
                 {
                     writer.WriteLine(file.URL);
                 }
@@ -152,8 +152,12 @@ namespace com.drewchaseproject.MDM.Library.Utilities
         public static List<DownloadFile> ImportDownloads(string file)
         {
             List<DownloadFile> value = new List<DownloadFile>();
-            if (!File.Exists(file)) return value;
-            using (var reader = new StreamReader(file))
+            if (!File.Exists(file))
+            {
+                return value;
+            }
+
+            using (StreamReader reader = new StreamReader(file))
             {
                 while (!reader.EndOfStream)
                 {

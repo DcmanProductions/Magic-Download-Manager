@@ -109,9 +109,14 @@ namespace com.drewchaseproject.MDM.WPF.Pages
             {
                 Added = true;
                 if (FileUtilities.IsSingleFile(URLTextBox.Text))
+                {
                     Downloads.Singleton.AddDownload(FileUtilities.ImportDownloads(URLTextBox.Text).ToArray());
+                }
                 else if (NetworkUtility.IsValidDownloadUrl(URLTextBox.Text))
+                {
                     Downloads.Singleton.AddDownload(GetDownloadFile);
+                }
+
                 MainWindow.Singleton.Main.Content = Downloads.Singleton;
             };
 

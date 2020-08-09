@@ -24,7 +24,7 @@ namespace Launcher
 
         private void RegisterEvents()
         {
-            openAccountURL.Click += (s, e) => new Process() { StartInfo = new ProcessStartInfo() { FileName = "https://getmagicdm.tk/index.html#header15-s" } }.Start();
+            openAccountURL.Click += (s, e) => new Process() { StartInfo = new ProcessStartInfo() { FileName = "https://getmagicdm.com/index.php#header15-s" } }.Start();
 
             ActivateAccountButton.Click += (s, e) =>
             {

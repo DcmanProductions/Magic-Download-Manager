@@ -35,7 +35,7 @@ namespace com.drewchaseproject.MDM.Library.Data
         {
             get
             {
-                using (var reader = new StreamReader(Path.Combine(Values.Singleton.ConfigDirectory, "CHANGELOG")))
+                using (StreamReader reader = new StreamReader(Path.Combine(Values.Singleton.ConfigDirectory, "CHANGELOG")))
                 {
                     return reader.ReadToEnd();
                 }
@@ -44,17 +44,21 @@ namespace com.drewchaseproject.MDM.Library.Data
 
         public Button PlayDownloadBtn { get; set; }
 
-        DownloadFile _currentFileDownloading { get; set; }
+        private DownloadFile _currentFileDownloading { get; set; }
         public DownloadFile CurrentFileDownloading
         {
-            get
-            {
-                return _currentFileDownloading;
-            }
+            get => _currentFileDownloading;
             set
             {
-                if (value == null) PlayDownloadBtn.IsEnabled = true;
-                else PlayDownloadBtn.IsEnabled = false;
+                if (value == null)
+                {
+                    PlayDownloadBtn.IsEnabled = true;
+                }
+                else
+                {
+                    PlayDownloadBtn.IsEnabled = false;
+                }
+
                 _currentFileDownloading = value;
             }
         }
@@ -66,7 +70,11 @@ namespace com.drewchaseproject.MDM.Library.Data
         {
             get
             {
-                if (_queue == null) _queue = new List<DownloadFile>();
+                if (_queue == null)
+                {
+                    _queue = new List<DownloadFile>();
+                }
+
                 return _queue;
             }
             set => _queue = value;
@@ -218,7 +226,7 @@ namespace com.drewchaseproject.MDM.Library.Data
             }
         }
 
-        public string VersionURL => @"https://dl.getmagicdm.tk/Version";
+        public string VersionURL => @"https://dl.getmagicdm.com/Version";
 
         public string ConfigFile
         {
@@ -228,7 +236,7 @@ namespace com.drewchaseproject.MDM.Library.Data
                 return path;
             }
         }
-        
+
         public string UserCacheFile
         {
             get
@@ -255,8 +263,8 @@ namespace com.drewchaseproject.MDM.Library.Data
                 string path = Path.Combine(Directory.GetParent(CurrentlyExecutingApplicationAssembly.Location).FullName, "Icon.ico");
                 if (!File.Exists(path))
                 {
-                    var icon = System.Drawing.Icon.ExtractAssociatedIcon(CurrentlyExecutingApplicationAssembly.Location);
-                    using (var stream = new FileStream(path, FileMode.Create))
+                    System.Drawing.Icon icon = System.Drawing.Icon.ExtractAssociatedIcon(CurrentlyExecutingApplicationAssembly.Location);
+                    using (FileStream stream = new FileStream(path, FileMode.Create))
                     {
                         icon.Save(stream);
                         stream.Flush();
@@ -322,24 +330,25 @@ namespace com.drewchaseproject.MDM.Library.Data
         public string Application_Executable_Key => "EXE";
         public string Application_App_Key => "Application";
 
-        public bool MinimizeOnStart { get { return Configuration.Singleton.manager.GetConfigByKey("Minimize ON Start").ParseBoolean(); } set { Configuration.Singleton.manager.GetConfigByKey("Minimize ON Start").Value = value + ""; } }
-        public bool MaximizeOnDownload { get { return Configuration.Singleton.manager.GetConfigByKey("Maximize on Download Start").ParseBoolean(); } set { Configuration.Singleton.manager.GetConfigByKey("Maximize on Download Start").Value = value + ""; } }
+        public bool MinimizeOnStart { get => Configuration.Singleton.manager.GetConfigByKey("Minimize ON Start").ParseBoolean(); set => Configuration.Singleton.manager.GetConfigByKey("Minimize ON Start").Value = value + ""; }
+        public bool MaximizeOnDownload { get => Configuration.Singleton.manager.GetConfigByKey("Maximize on Download Start").ParseBoolean(); set => Configuration.Singleton.manager.GetConfigByKey("Maximize on Download Start").Value = value + ""; }
         public bool StartWithWindows
         {
-            get
-            {
-                return Configuration.Singleton.manager.GetConfigByKey("StartWithWindows").ParseBoolean();
-            }
+            get => Configuration.Singleton.manager.GetConfigByKey("StartWithWindows").ParseBoolean();
             set
             {
                 Configuration.Singleton.manager.GetConfigByKey("StartWithWindows").Value = value + "";
                 if (value)
+                {
                     RegistryUtility.AddToStartup();
+                }
                 else
+                {
                     RegistryUtility.RemoveFromStartup();
+                }
             }
         }
-        public string LauncherExe { get { return Configuration.Singleton.manager.GetConfigByKey("Launcher Directory").Value; } set { Configuration.Singleton.manager.GetConfigByKey("Launcher Directory").Value = value; } }
+        public string LauncherExe { get => Configuration.Singleton.manager.GetConfigByKey("Launcher Directory").Value; set => Configuration.Singleton.manager.GetConfigByKey("Launcher Directory").Value = value; }
         public string LauncherInstallDirectory => Directory.GetParent(LauncherExe).FullName;
 
         public string ApplicationVersion => new ConfigManager(LocalVersionFile).GetConfigByKey(Application_App_Key).Value;

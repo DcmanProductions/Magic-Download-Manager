@@ -2,7 +2,6 @@
 using com.drewchaseproject.MDM.Library.Data;
 using com.drewchaseproject.MDM.Library.Data.DB;
 using com.drewchaseproject.MDM.Library.Objects;
-using com.drewchaseproject.MDM.Library.Utilities;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -32,7 +31,7 @@ namespace Launcher
             if (Activation.IsAuthorizedUser(Values.Singleton.Username, Values.Singleton.Password))
             {
                 RegisterEvents();
-                UpdateLauncher(); 
+                UpdateLauncher();
                 GenerateShortcuts();
                 Changelog();
                 Update();
@@ -43,19 +42,19 @@ namespace Launcher
             }
         }
 
-        void GenerateShortcuts()
+        private void GenerateShortcuts()
         {
-            foreach (var shortcut in Shortcuts.AsList)
+            foreach (ShortcutFile shortcut in Shortcuts.AsList)
             {
                 shortcut.Save();
             }
         }
 
-        void Changelog()
+        private void Changelog()
         {
-            using (var client = new WebClient())
+            using (WebClient client = new WebClient())
             {
-                client.DownloadFile("https://dl.getmagicdm.tk/CHANGELOG", Path.Combine(Values.Singleton.ConfigDirectory, "CHANGELOG"));
+                client.DownloadFile("https://dl.getmagicdm.com/CHANGELOG", Path.Combine(Values.Singleton.ConfigDirectory, "CHANGELOG"));
                 client.Dispose();
             }
         }
@@ -89,7 +88,7 @@ namespace Launcher
                         Directory.CreateDirectory(Directory.GetParent(path).FullName);
                     }
 
-                    client.DownloadFile("http://dl.getmagicdm.tk/LauncherUpdater.exe", path);
+                    client.DownloadFile("http://dl.getmagicdm.com/LauncherUpdater.exe", path);
                     client.Dispose();
                 }
                 new Process() { StartInfo = new ProcessStartInfo() { FileName = $"\"{path}\"", Arguments = $"\"{Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName}\" \"{DownloadURL}\" \"{LaunchExe}\"", CreateNoWindow = false } }.Start();

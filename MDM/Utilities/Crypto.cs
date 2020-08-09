@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace com.drewchaseproject.MDM.Library.Utilities
 {
@@ -14,7 +11,7 @@ namespace com.drewchaseproject.MDM.Library.Utilities
         //While an app specific salt is not the best practice for
         //password based encryption, it's probably safe enough as long as
         //it is truly uncommon. Also too much work to alter this answer otherwise.
-        private static byte[] _salt = new MD5CryptoServiceProvider().ComputeHash(new UnicodeEncoding().GetBytes(Environment.MachineName));
+        private static readonly byte[] _salt = new MD5CryptoServiceProvider().ComputeHash(new UnicodeEncoding().GetBytes(Environment.MachineName));
 
         /// <summary>
         /// Encrypt the given string using AES.  The string can be decrypted using 
@@ -25,9 +22,14 @@ namespace com.drewchaseproject.MDM.Library.Utilities
         public static string EncryptStringAES(string plainText, string sharedSecret)
         {
             if (string.IsNullOrEmpty(plainText))
+            {
                 throw new ArgumentNullException("plainText");
+            }
+
             if (string.IsNullOrEmpty(sharedSecret))
+            {
                 throw new ArgumentNullException("sharedSecret");
+            }
 
             string outStr = null;                       // Encrypted string to return
             RijndaelManaged aesAlg = null;              // RijndaelManaged object used to encrypt the data.
@@ -65,7 +67,9 @@ namespace com.drewchaseproject.MDM.Library.Utilities
             {
                 // Clear the RijndaelManaged object.
                 if (aesAlg != null)
+                {
                     aesAlg.Clear();
+                }
             }
 
             // Return the encrypted bytes from the memory stream.
@@ -80,11 +84,20 @@ namespace com.drewchaseproject.MDM.Library.Utilities
         /// <param name="sharedSecret">A password used to generate a key for decryption.</param>
         public static string DecryptStringAES(string cipherText, string sharedSecret)
         {
-            if (string.IsNullOrWhiteSpace(cipherText)) return "";
+            if (string.IsNullOrWhiteSpace(cipherText))
+            {
+                return "";
+            }
+
             if (string.IsNullOrEmpty(cipherText))
+            {
                 throw new ArgumentNullException("cipherText");
+            }
+
             if (string.IsNullOrEmpty(sharedSecret))
+            {
                 throw new ArgumentNullException("sharedSecret");
+            }
 
             // Declare the RijndaelManaged object
             // used to decrypt the data.
@@ -114,10 +127,12 @@ namespace com.drewchaseproject.MDM.Library.Utilities
                     using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
                     {
                         using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+                        {
 
                             // Read the decrypted bytes from the decrypting stream
                             // and place them in a string.
                             plaintext = srDecrypt.ReadToEnd();
+                        }
                     }
                 }
             }
@@ -125,7 +140,9 @@ namespace com.drewchaseproject.MDM.Library.Utilities
             {
                 // Clear the RijndaelManaged object.
                 if (aesAlg != null)
+                {
                     aesAlg.Clear();
+                }
             }
 
             return plaintext;

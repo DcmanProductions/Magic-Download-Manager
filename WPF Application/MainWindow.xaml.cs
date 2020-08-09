@@ -6,17 +6,11 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Web.UI.WebControls;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Interop;
 
 using Application = System.Windows.Application;
-using Timer = System.Threading.Timer;
 
 namespace com.drewchaseproject.MDM.WPF
 {
@@ -129,13 +123,18 @@ namespace com.drewchaseproject.MDM.WPF
 
         private void OnExit()
         {
-            if (NotifyIcon != null) NotifyIcon.Visible = false;
+            if (NotifyIcon != null)
+            {
+                NotifyIcon.Visible = false;
+            }
 
             FastDownloadExecutableUtility.DestroyExecutable();
             try
             {
                 if (Values.Singleton.CurrentFileDownloading != null && Values.Singleton.CurrentFileDownloading.DownloadFileProcess != null && !Values.Singleton.CurrentFileDownloading.DownloadFileProcess.HasExited)
+                {
                     Values.Singleton.CurrentFileDownloading.DownloadFileProcess.Kill();
+                }
             }
             catch { }
 
@@ -165,7 +164,7 @@ namespace com.drewchaseproject.MDM.WPF
             }
         }
 
-        void DelayedSetup()
+        private void DelayedSetup()
         {
             long current = DateTime.Now.Ticks, wanted = DateTime.Now.AddSeconds(2).Ticks;
             while (current < wanted)
@@ -217,7 +216,7 @@ namespace com.drewchaseproject.MDM.WPF
             NotifyIcon.ContextMenuStrip = contextMenu;
         }
 
-        void CheckForUpdates()
+        private void CheckForUpdates()
         {
             if (Values.Singleton.UpdateAvailable)
             {
@@ -229,7 +228,7 @@ namespace com.drewchaseproject.MDM.WPF
             }
         }
 
-        void AutoCheckForUpdates()
+        private void AutoCheckForUpdates()
         {
             int seconds = 5;
             int minutes = 20;

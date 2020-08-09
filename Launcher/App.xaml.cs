@@ -2,9 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Windows;
 
 namespace Launcher
@@ -16,15 +14,19 @@ namespace Launcher
     {
         public App()
         {
-            var processes = Process.GetProcessesByName("Magic Download Manager");
+            Process[] processes = Process.GetProcessesByName("Magic Download Manager");
             string[] args = Environment.GetCommandLineArgs();
             if (args.Length > 1)
             {
                 for (int i = 1; i < args.Length; i++)
                 {
                     string url = args[i];
-                    if (url.StartsWith("magicdm://")) url = url.Replace("magicdm://", "");
-                    using (var writer = new StreamWriter(Values.Singleton.HotSwapDownloadCache, true))
+                    if (url.StartsWith("magicdm://"))
+                    {
+                        url = url.Replace("magicdm://", "");
+                    }
+
+                    using (StreamWriter writer = new StreamWriter(Values.Singleton.HotSwapDownloadCache, true))
                     {
                         writer.WriteLine(url);
                         writer.Flush();

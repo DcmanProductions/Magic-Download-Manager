@@ -1,20 +1,7 @@
 ﻿using com.drewchaseproject.MDM.Library.Data;
 using com.drewchaseproject.MDM.Library.Objects;
 using com.drewchaseproject.MDM.Library.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace com.drewchaseproject.MDM.WPF.Pages.Template
 {
@@ -43,13 +30,24 @@ namespace com.drewchaseproject.MDM.WPF.Pages.Template
             {
                 UIUtility.RemoveDownloads(file);
                 if (file.DownloadFileProcess != null)
+                {
                     if (!file.DownloadFileProcess.HasExited)
+                    {
                         file.DownloadFileProcess.Kill();
+                    }
+                }
+
                 if (Values.Singleton.CurrentFileDownloading != null)
+                {
                     if (Values.Singleton.DownloadQueue.Count > 0)
+                    {
                         Values.Singleton.DownloadQueue[0].IsDownloading = true;
+                    }
                     else
+                    {
                         Values.Singleton.CurrentFileDownloading = null;
+                    }
+                }
             };
 
         }

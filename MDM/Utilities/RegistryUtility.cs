@@ -1,20 +1,14 @@
 ﻿using com.drewchaseproject.MDM.Library.Data;
 using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
 
 namespace com.drewchaseproject.MDM.Library.Utilities
 {
     public static class RegistryUtility
     {
-        static string run = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", protocol = @"magicdm\shell\open\command";
+        private static readonly string run = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", protocol = @"magicdm\shell\open\command";
         public static void AddToStartup()
         {
-            using (var key = Registry.CurrentUser.OpenSubKey(run, true))
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(run, true))
             {
                 key.SetValue(Values.Singleton.ApplicationName.Replace(" ", "_"), $"\"{Values.Singleton.LauncherExe}\"");
             }
@@ -24,12 +18,19 @@ namespace com.drewchaseproject.MDM.Library.Utilities
         {
             get
             {
-                using (var key = Registry.CurrentUser.OpenSubKey(run, true))
+                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(run, true))
                 {
                     if (key.GetValue(Values.Singleton.ApplicationName.Replace(" ", "_")) != null)
+                    {
                         if (key.GetValue(Values.Singleton.ApplicationName.Replace(" ", "_")).GetType().Equals(typeof(string)))
+                        {
                             if ((string) key.GetValue(Values.Singleton.ApplicationName.Replace(" ", "_")) != $"\"{Values.Singleton.LauncherExe}\"")
+                            {
                                 AddToStartup();
+                            }
+                        }
+                    }
+
                     return key.GetValue(Values.Singleton.ApplicationName.Replace(" ", "_")) != null;
                 }
             }
@@ -39,7 +40,7 @@ namespace com.drewchaseproject.MDM.Library.Utilities
         {
             if (IsAddedToStartup)
             {
-                using (var key = Registry.CurrentUser.OpenSubKey(run, true))
+                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(run, true))
                 {
                     key.DeleteValue(Values.Singleton.ApplicationName.Replace(" ", "_"));
                 }
@@ -49,7 +50,7 @@ namespace com.drewchaseproject.MDM.Library.Utilities
 
         public static void AddUrlProtocol()
         {
-            using (var key = Registry.ClassesRoot.OpenSubKey(protocol, true))
+            using (RegistryKey key = Registry.ClassesRoot.OpenSubKey(protocol, true))
             {
                 key.SetValue("", $"\"{Values.Singleton.LauncherExe}\" \"%1\"");
             }
@@ -59,12 +60,19 @@ namespace com.drewchaseproject.MDM.Library.Utilities
         {
             get
             {
-                using (var key = Registry.ClassesRoot.OpenSubKey(protocol, true))
+                using (RegistryKey key = Registry.ClassesRoot.OpenSubKey(protocol, true))
                 {
                     if (key.GetValue("") != null)
+                    {
                         if (key.GetValue("").GetType().Equals(typeof(string)))
+                        {
                             if ((string) key.GetValue("") != $"\"{Values.Singleton.LauncherExe}\" \"%1\"")
+                            {
                                 AddUrlProtocol();
+                            }
+                        }
+                    }
+
                     return key.GetValue("") != null;
                 }
             }
@@ -74,7 +82,7 @@ namespace com.drewchaseproject.MDM.Library.Utilities
         {
             if (IsUrlProtocolAdded)
             {
-                using (var key = Registry.CurrentUser.OpenSubKey(protocol, true))
+                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(protocol, true))
                 {
                     key.DeleteValue("");
                 }
