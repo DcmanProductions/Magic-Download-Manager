@@ -1,0 +1,53 @@
+<p class="page-title">Settings</p>
+<div class="grid-container">
+    <div class="Account settings-panel">
+        <div class="panel-header">
+            Account
+        </div>
+    </div>
+    <div class="Downloads settings-panel">
+        <div class="panel-header">
+            Download
+        </div>
+        <div class="setting-option">
+            <div class="setting-option-title">Pre-Allocate Storage</div>
+            <div class="setting-option-content">
+                <label class="switch">
+                    <input type="checkbox" id="pre-allocate-storage" checked title="Pre-Allocate Storage" >
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </div>
+        <div class="setting-option">
+            <div class="setting-option-title">Max Split Count</div>
+            <div class="setting-option-content">
+                <input id="max-split-count" type="number" style="width: 75px;" value="16" title="Max Split Count" min="2" max="100">
+            </div>
+        </div>
+        <div class="setting-option">
+            <div class="setting-option-title">Max Concurrent Downloads</div>
+            <div class="setting-option-content">
+                <input id="max-concurrent-downloads" type="number" style="width: 75px;" value="4" min="1" max="100" title="Max Concurrent Downloads">
+            </div>
+        </div>
+        <div class="setting-option">
+            <div class="setting-option-title">Default Location</div>
+            <div class="setting-option-content" style="cursor:pointer;">
+                <input type="text" id="DownloadLocationDisplay" class="no-select" readonly style="width: 160px;" >
+                <div id="DownloadLocationSelector"><i class="fas fa-folder"></i></div>
+                <input type="file" name="DownloadLocationExplorer" id="DownloadLocationExplorer" webkitdirectory style="display:none">
+            </div>
+        </div>
+    </div>
+    <div class="Application settings-panel">
+        <div class="panel-header">
+            Application
+        </div>
+    </div>
+    <div class="Cache settings-panel">
+        <div class="panel-header">
+            Cache
+        </div>
+    </div>
+</div>
+<script src="../js/settings.js"></script>

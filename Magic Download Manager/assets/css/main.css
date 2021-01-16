@@ -1,0 +1,96 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap');
+@import url('switch.css');
+@import url('input.css');
+@import url('scrollbar.css');
+*{
+    --primary: #33333D;
+    --secondary: #C53D6B;
+    --hoverBG: white;
+    --outline: var(--secondary) 1px solid;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body{
+    background-color: #424250;
+    overflow: hidden;
+}
+
+#main{
+    position: absolute;
+    margin-left: 50px;
+    margin-top: 35px;
+    color: white;
+    overflow: scroll;
+    height: calc(100vh - 29px);
+    width: calc(100% - 60px);
+}
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1.1fr;
+    gap: 50px 50px;
+    grid-template-areas:
+      "Account Downloads"
+      "Application Cache";
+      padding: 0px 25px 25px 25px;
+  }
+  .Account { grid-area: Account; }
+  .Downloads { grid-area: Downloads; }
+  .Application { grid-area: Application; }
+  .Cache { grid-area: Cache; }
+
+p.page-title{
+    font-size: 48px;
+    width: calc(100% - 50px);
+    text-align: center;
+    font-weight: 300;
+}
+
+.settings-panel{
+    height: auto;
+    background-color: var(--primary);
+    outline: var(--outline);
+}
+.panel-header{
+    outline: var(--outline);
+    width: 100%;
+    text-align: center;
+    font-size: 24px;
+    padding: 10px 0px;
+}
+
+.setting-option-title {
+    width: max-content;
+    font-size: 26px;
+    margin-right: 20px
+}
+
+.setting-option-content {
+    position: absolute;
+    right: 0px;
+    width: fit-content;
+    margin: auto;
+}
+
+.setting-option {
+    position: relative;
+    display: flex;
+    margin: 25px;
+}
+
+div#DownloadLocationSelector {
+    background-color: var(--secondary);
+    margin-top: -42px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-radius: 180px;
+    position: absolute;
+    right: 5px;
+    cursor: pointer;
+}
+
+.no-select{
+    user-select: none;
+}

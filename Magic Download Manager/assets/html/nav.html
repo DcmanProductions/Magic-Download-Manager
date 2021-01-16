@@ -1,0 +1,45 @@
+<link rel="stylesheet" href="../css/nav.css">
+<div id="nav" class="col" class="navigation-collapsed">
+    <div class="row">
+        <div class="menuItem" onclick="ToggleNavigation()">
+            <div class="ItemTitle">
+                Magic Download Manager
+            </div>
+            <div class="ItemIcon">
+                <i class="fas fa-align-justify"></i>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="menuItem active" onclick="LoadView('download', this)">
+            <div class="ItemTitle">
+                Downloads
+            </div>
+            <div class="ItemIcon">
+                <i class="fas fa-arrow-down"></i>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="menuItem" onclick="LoadView('console', this)">
+            <div class="ItemTitle">
+                Console
+            </div>
+            <div class="ItemIcon">
+                <i class="fas fa-terminal"></i>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="position: absolute; bottom: 5px; width: 100%;">
+        <div class="menuItem" onclick="LoadView('settings', this)">
+            <div class="ItemTitle">
+                Settings
+            </div>
+            <div class="ItemIcon">
+                <i class="fas fa-cog"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../js/nav.js"></script>

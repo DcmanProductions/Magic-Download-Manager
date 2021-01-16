@@ -1,0 +1,17 @@
+{
+  "name": "mdmupdater",
+  "version": "1.0.0",
+  "description": "",
+  "main": "assets/js/index.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Drew Chase",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^11.2.0"
+  },
+  "dependencies": {
+    "uaup-js": "0.0.20"
+  }
+}

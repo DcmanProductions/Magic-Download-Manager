@@ -1,0 +1,19 @@
+{
+  "name": "magic-download-manager",
+  "version": "0.0.1",
+  "description": "A Fast downloader to download multiple files faster",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Drew Chase",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^11.1.1"
+  },
+  "dependencies": {
+    "bootstrap": "^4.5.3",
+    "jquery": "^3.5.1",
+    "rapid-downloader": "^1.2.5"
+  }
+}

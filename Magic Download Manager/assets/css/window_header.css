@@ -1,0 +1,57 @@
+#titleBar{
+    z-index: 1000;
+    position: absolute;
+    width: 100%;
+    height:29px;
+    justify-content: right;
+    -webkit-app-region: drag;
+    top: 0px;
+    left: 0px;
+    background-color: var(--primary);
+    outline: var(--outline);
+}
+
+div#win-control{
+    z-index: 1001;
+    position: absolute;
+    width: 150px;
+    height: 29px;
+    top: 0px;
+    right: 0px;
+    background-color:var(--primary);
+    -webkit-app-region: no-drag;
+}
+#close-btn{
+    right:0px;
+}
+
+#close-btn:hover{
+    background-color: rgb(201, 69, 69);
+}
+#maximize-btn{
+    right:42px;
+}
+#minimize-btn{
+    right:84px;
+}
+#dev-btn{
+    right:126px;
+}
+
+.win-option{
+    z-index: 1002;
+    position: absolute;
+    top: 0px;
+    color: white;
+    font-size: 16px;
+    padding: 5px 15px;
+    opacity: .5;
+    width: fit-content;
+    cursor: default;
+    -webkit-app-region: no-drag;
+}
+
+.win-option:hover{
+    background-color: rgba(167, 167, 167, 0.274);
+    opacity: 1;
+}
