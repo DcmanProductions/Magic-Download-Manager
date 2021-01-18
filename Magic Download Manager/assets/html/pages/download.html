@@ -1,2 +1,15 @@
+<link rel="stylesheet" href="../css/progress.css">
+<link rel="stylesheet" href="../css/download.css">
 <p class="page-title">Downloads</p>
-<button onclick="new DownloadFile('https://hi.com', 'in/my/butt/index.html').Download()">HI</button>
+<div class="settings-panel" id="download-panel">
+    <div style="position: relative;" class="panel-header">
+        Queue
+        <div id="add-download-btn" class="download-list-controls" onclick="AddDownload(new DownloadFile('https://mirrors.rit.edu/ubuntu-releases/20.04.1/ubuntu-20.04.1-desktop-amd64.iso', DownloadLocation))">+</div>
+        <div id="clear-download-btn" class="download-list-controls" onclick="ClearDownloads()" ondblclick="ToggleAutoClear()">CLEAR</div>
+    </div>
+    <div id="download-list">
+
+    </div>
+</div>
+
+<script src="../js/download.js"></script>

@@ -1,0 +1,77 @@
+#download-panel{
+    width: 95%;
+    margin-left:25px;
+}
+
+.download-item, .download-item-completed{
+    position: relative;
+    padding: 20px 0;
+}
+
+.download-title{
+    position: absolute;
+    left: 25px;
+}
+.download-information{
+    position: absolute;
+    right: 25px;
+}
+
+.download-progress{
+    padding: 10px 0;
+}
+
+.download-progress-bar{
+    position: relative;
+    z-index: 9;
+    background-color: rgb(44, 44, 44);
+    margin:25px;
+    border-radius: 20px;
+    height: 15px;
+    width: 95%;
+}
+
+.download-progress-done{
+    box-shadow: 0 0 11px 0px white, 0 0 10px 0px #ff00ff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 0px;
+    opacity: 0;
+    background-color: #ffffff;
+    border-radius: 20px;
+    color: black;
+    transition: 1s ease 0.3s;
+    font-family: 'Roboto', sans-serif;
+}
+
+#add-download-btn{
+    right: 30px;
+    width: 25px;
+    padding:0;
+}
+
+#clear-download-btn{
+    right: 70px;
+}
+
+.download-list-controls{
+    position: absolute;
+    top: 25%;
+    width: max-content;
+    padding:0 15px;
+    height:25px;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    outline: 1px solid white;
+    transition: .25s;
+}
+
+.download-list-controls:hover, .download-list-controls.download-list-controls-toggled{
+    box-shadow: 0 0 11px 0px white;
+    cursor: pointer;
+    transform: scale(1.025);
+}
+
