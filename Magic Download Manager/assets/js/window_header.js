@@ -2,7 +2,8 @@ const { remote } = require('electron');
 
 var win = remote.getCurrentWindow();
 function CloseApplication() {
-    win.close();
+    // win.close();
+    win.hide();
 }
 function MaximizeApplication() {
     if (!win.isMaximized())
