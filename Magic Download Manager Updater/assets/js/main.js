@@ -6,6 +6,7 @@ setInterval(() => {
     let value = Math.floor(progress_bar.value * 100);
     if (value >= 10)
         progress.style.opacity = 1;
+    // progress_bar.value += .01;
     progress.style.width = `${value}%`;
     progress.innerHTML = `${value}%`;
 }, 100)

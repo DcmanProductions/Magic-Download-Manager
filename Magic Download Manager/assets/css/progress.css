@@ -1,0 +1,24 @@
+#progress{
+    position: relative;
+    z-index: 9;
+    background-color: rgb(44, 44, 44);
+    margin:25px;
+    border-radius: 20px;
+    height: 15px;
+    width: 95%;
+}
+
+#progress-done{
+    box-shadow: 0 0 11px 0px white, 0 0 10px 0px #ff00ff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 0px;
+    opacity: 0;
+    background-color: #ffffff;
+    border-radius: 20px;
+    color: black;
+    transition: 1s ease 0.3s;
+    font-family: 'Roboto', sans-serif;
+}

@@ -1,6 +1,9 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, Tray, Menu } = require('electron');
+const icon = require('path').join(__dirname, 'assets', 'img', 'Icon.ico')
+var tray = null;
+var win = null;
 function createWindow() {
-    const win = new BrowserWindow({
+    win = new BrowserWindow({
         width: 1280,
         height: 720,
         minWidth: 1280,
@@ -9,16 +12,38 @@ function createWindow() {
             nodeIntegration: true,
             enableRemoteModule: true
         },
-        icon: require('path').join(__dirname, 'assets', 'img', 'Icon.ico'),
+        icon: icon,
         frame: false,
     });
 
     win.setTitle('Magic Download Manager');
     win.loadFile('assets/html/index.html');
-    // win.webContents.openDevTools();
 }
 
-app.whenReady().then(createWindow);
+function createTray() {
+    tray = new Tray(icon);
+    tray.addListener('double-click', () => {
+        win.show();
+    })
+    tray.setContextMenu(Menu.buildFromTemplate(
+        [
+            {
+                label: "Magic Download Manager",
+                enabled:false
+            },
+            {
+                label: "Open MagicDM",
+                click: () => { win.show() }
+            },
+            {
+                label: "Quit MagicDM",
+                click: () => { app.quit() }
+            }
+        ]
+    ))
+}
+
+app.whenReady().then(createWindow).then(createTray);
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {

@@ -13,7 +13,7 @@ function setNavigationToggle(collapsed = false) {
     nav.removeClass(collapsed ? "navigation-collapsed" : "navigation-expanded")
 }
 
-function LoadView(url = 'settings', called = null) {
+function LoadView(url = 'download', called = null) {
     const view = $('#main');
     url = url.toLowerCase();
     view.empty();
