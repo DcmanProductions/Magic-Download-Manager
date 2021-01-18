@@ -4,7 +4,7 @@
     position: fixed;
     left: 0px;
     height: calc(100vh - 29px);
-    z-index: 1;
+    z-index: 9999;
     width: 100%;
     top: 29px;
     outline: var(--outline);
@@ -24,18 +24,19 @@
         padding-top: 15px;
         overflow: hidden;
         width: max-content;
-        transition: 2.5s;
     }
 
     #nav.navigation-expanded .menuItem .ItemTitle{
         transition: .5s;
         opacity: 1;
+        margin-left: 0;
     }
     
     
     #nav.navigation-collapsed .menuItem .ItemTitle {
         transition: 0s;
         opacity: 0;
+        margin-left: -500%;
     }
 
     #nav .menuItem {

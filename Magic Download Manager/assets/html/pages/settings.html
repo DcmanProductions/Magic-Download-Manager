@@ -13,7 +13,7 @@
             <div class="setting-option-title">Pre-Allocate Storage</div>
             <div class="setting-option-content">
                 <label class="switch">
-                    <input type="checkbox" id="pre-allocate-storage" checked title="Pre-Allocate Storage" >
+                    <input type="checkbox" id="pre-allocate-storage" checked title="Pre-Allocate Storage">
                     <span class="slider round"></span>
                 </label>
             </div>
@@ -33,7 +33,7 @@
         <div class="setting-option">
             <div class="setting-option-title">Default Location</div>
             <div class="setting-option-content" style="cursor:pointer;">
-                <input type="text" id="DownloadLocationDisplay" class="no-select" readonly style="width: 160px;" >
+                <input type="text" id="DownloadLocationDisplay" class="no-select" style="width: 160px; cursor: pointer; text-align: right;" readonly>
                 <div id="DownloadLocationSelector"><i class="fas fa-folder"></i></div>
                 <input type="file" name="DownloadLocationExplorer" id="DownloadLocationExplorer" webkitdirectory style="display:none">
             </div>
@@ -49,5 +49,7 @@
             Cache
         </div>
     </div>
+    <script>
+        LoadSettings();
+    </script>
 </div>
-<script src="../js/settings.js"></script>

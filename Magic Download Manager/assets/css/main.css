@@ -61,7 +61,7 @@ p.page-title{
 
 .setting-option-title {
     width: max-content;
-    font-size: 26px;
+    font-size: 18px;
     margin-right: 20px
 }
 
@@ -94,3 +94,5 @@ div#DownloadLocationSelector {
 .no-select{
     user-select: none;
 }
+
+

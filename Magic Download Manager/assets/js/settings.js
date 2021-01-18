@@ -1,6 +1,9 @@
 let DownloadLocationDisplay = document.getElementById('DownloadLocationDisplay');
 let DownloadLocationSelector = document.getElementById('DownloadLocationSelector');
 let DownloadLocationExplorer = document.getElementById('DownloadLocationExplorer');
+let MaxSplitElement = $('#max-split-count')[0];
+let PreAllocateElement = $('#pre-allocate-storage')[0];
+let MaxConcurrentDownloadElement = $('#max-concurrent-downloads')[0];
 
 
 let defaultSettings = {
@@ -16,32 +19,7 @@ let defaultSettings = {
     }
 }
 
-DownloadLocationDisplay.onclick = e => {
-    require('electron').shell.openPath(DownloadLocation);
-}
 
-Array.from($('input'), e => {
-    console.log(e.id);
-    $(`#${e.id}`).on('change', () => {
-        SaveSettings();
-    })
-})
-
-let MaxSplitElement = $('#max-split-count')[0];
-let PreAllocateElement = $('#pre-allocate-storage')[0];
-let MaxConcurrentDownloadElement = $('#max-concurrent-downloads')[0];
-
-
-DownloadLocationSelector.onclick = e => {
-    DownloadLocationExplorer.click();
-}
-DownloadLocationExplorer.onchange = e => {
-    let path = require('path').dirname(e.target.files[0].path + "");
-    DownloadLocationDisplay.value = path;
-    SaveSettings();
-}
-
-LoadSettings();
 function SaveSettings() {
     Init();
 
@@ -71,6 +49,31 @@ function SaveSettings() {
 }
 
 function LoadSettings() {
+    DownloadLocationDisplay = document.getElementById('DownloadLocationDisplay');
+    DownloadLocationSelector = document.getElementById('DownloadLocationSelector');
+    DownloadLocationExplorer = document.getElementById('DownloadLocationExplorer');
+    MaxSplitElement = $('#max-split-count')[0];
+    PreAllocateElement = $('#pre-allocate-storage')[0];
+    MaxConcurrentDownloadElement = $('#max-concurrent-downloads')[0];
+
+    DownloadLocationSelector.onclick = e => {
+        DownloadLocationExplorer.click();
+    }
+    DownloadLocationExplorer.onchange = e => {
+        let path = require('path').dirname(e.target.files[0].path + "");
+        DownloadLocationDisplay.value = path;
+        SaveSettings();
+    }
+
+    DownloadLocationDisplay.onclick = e => {
+        require('electron').shell.openPath(DownloadLocation);
+    }
+
+    Array.from($('input'), e => {
+        $(`#${e.id}`).on('change', () => {
+            SaveSettings();
+        })
+    })
     let settings = JSON.parse(fs.readFileSync(SettingsFile));
     let split = Number.parseInt(settings.Downloads.MaxSplitCount);
     let connc = Number.parseInt(settings.Downloads.MaxConcurrentDownloads);
